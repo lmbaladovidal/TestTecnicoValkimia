@@ -1,19 +1,19 @@
 import { Grid, Typography } from "@mui/material"
 
-export const AuthLayout = ({ children, title = '' }) => {
+export const MainLayout = ({ children, title = '' }) => {
     return (
         <Grid
             container
             spacing={0}
             direction='column'
             alignItems='center'
-            justifyContent='center'
+            justifyContent='left'
             sx={{ minHeight: '100vh', backgroundColor: 'primary.main', padding: 4 }}>
             <Grid item
                 className='box-shadow'
-                xs={3}
+                xs={12}
                 sx={{
-                    width: { sm: 450 },
+                    // width: { sm: 900 },
                     background: 'white',
                     padding: 3,
                     borderRadius: 2
@@ -24,3 +24,32 @@ export const AuthLayout = ({ children, title = '' }) => {
         </Grid>
     )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
