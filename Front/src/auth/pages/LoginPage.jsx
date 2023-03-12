@@ -13,8 +13,8 @@ import { checkingAuthentication } from '../../store/auth/thunks';
 export const LoginPage = () => {
   const dispatch = useDispatch();
   const { email, password, onInputChange, formState } = useForm({
-    email: "lm.baladovidal@gmail.com",
-    password: "123456",
+    email: "",
+    password: "",
   });
 
   const onSubmit = (event) => {
@@ -22,12 +22,6 @@ export const LoginPage = () => {
     console.log({ email, password });
     dispatch(checkingAuthentication());
   };
-
-  const onGoogleSingIn = () => {
-    console.log("GoogleSingIn", { email, password });
-    dispatch(startGoogleSingIn());
-  };
-
   return (
     <AuthLayout title="Login">
       <form onSubmit={onSubmit}>
@@ -36,7 +30,7 @@ export const LoginPage = () => {
             <TextField
               label="Correo"
               type="email"
-              placeholder="Correo@google.com"
+              placeholder="Correo@domain.com"
               fullWidth
               name="email"
               value={email}
@@ -55,15 +49,9 @@ export const LoginPage = () => {
             />
           </Grid>
           <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12}>
               <Button type="submit" variant="contained" fullWidth>
                 Login
-              </Button>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Button variant="contained" onClick={onGoogleSingIn} fullWidth>
-                <Google />
-                <Typography sx={{ ml: 1 }}>Google</Typography>
               </Button>
             </Grid>
           </Grid>
