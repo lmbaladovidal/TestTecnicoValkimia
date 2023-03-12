@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   page:0,
   clientes:[],
+  amount:0,
   isLoading:false
 };
 
@@ -16,6 +17,12 @@ export const ClientsSlice = createSlice({
     setClientes: (state, action) => {
       state.isLoading=false;
       state.page = action.payload.page
+      state.amount = action.payload.amount
+      state.clientes = action.payload.clientes
+    },
+    setCliente: (state, action) => {
+      console.log(action.payload.cliente);
+      state.isLoading=false;
       state.clientes = action.payload.clientes
     },
   },
