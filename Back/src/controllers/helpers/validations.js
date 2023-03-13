@@ -28,7 +28,7 @@ const validarPassword = (value) => {
 export const validations = {
   validarTamaño,
   validarTexto,
-  validarNumero,
+  validarNumero
   validarEmail,
   validarPassword,
 };
