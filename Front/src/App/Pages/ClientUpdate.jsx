@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useForm } from "../../hooks";
 import { MainLayout } from "../Layout/MainLayout";
-import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
@@ -11,39 +9,50 @@ import Autocomplete from "@mui/material/Autocomplete";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { getCliente } from "../../store/Clients/thunks";
+import { getCiudades } from "../../store/Cities/thunks";
 
 export const ClientUpdate = () => {
+
   const { idCliente } = useParams();
   
-  const { clientes } = useSelector((state) => state.client);
+  const { clientes,isLoading } = useSelector((state) => state.client);
+  const {ciudades} = useSelector((state) => state.cities);
   const dispatch = useDispatch();
   const [nombre, setNombre] = useState('')
   const [apellido, setApellido] = useState('')
   const [domicilio, setDomicilio] = useState('')
   const [email, setEmail] = useState('')
+  const [ciudad, setCiudad] = useState('')
   const [habilitado, setHabilitado] = useState(false)
+  const [options, setOptions] = useState([])
   
 
   useEffect(() => {
-    console.log("antes dispatch",clientes.length);
-    console.log(idCliente);
     dispatch(getCliente(idCliente));
-    console.log("despues dispatch",clientes.length);
     if(clientes.length>0){
         setNombre(clientes[0].nombre)
         setApellido(clientes[0].apellido)
         setDomicilio(clientes[0].domicilio)
         setEmail(clientes[0].email)
+        setCiudad(clientes[0].ciudad)
         setHabilitado(clientes[0].habilitado)
     }
   }, []);
 
-  const options = [
-    { label: "The Godfather", id: "weqwer" },
-    { label: "Pulp Fiction", id: "fsdfasdfasd" },
-  ];
+  useEffect(() => {
+    dispatch(getCiudades());
+    console.log("useEfect",options);
+    if(ciudades.length>0){
+      setOptions(ciudades)
+      setCiudad(obtenerCiudad())
+    }
+  }, [ciudad])
   
-  const [value, setValue] = React.useState(options[0]);
+  const obtenerCiudad=()=>{
+    console.log("Encontre esto:",ciudades.filter(ciudad=>ciudad.id==ciudad)[0]);
+  }
+  
+  const [value, setValue] = useState({label:'Alcalá de Guadaira',id:'53eddb7e-c78d-4b6a-a35d-c61b13994a3b'});
   const onSubmit = (event) => {
     event.preventDefault();
   };
@@ -92,7 +101,7 @@ export const ClientUpdate = () => {
                 console.log(newValue);
                 setValue(newValue);
               }}
-            //   value={value}
+              value={value}
               renderInput={(params) => <TextField {...params} label="Ciudad" />}
             />
           </Grid>

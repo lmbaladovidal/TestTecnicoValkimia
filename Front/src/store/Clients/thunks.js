@@ -5,7 +5,7 @@ import { setClientes,startLoadingClientes } from "./ClientsSlice"
 export const getClientes=(page = 0)=>{
     return async(dispatch,getState)=>{
         dispatch(startLoadingClientes());
-        const {data} = await clientesApi.get(`/clients/list/${page}`)
+        const {data} = await clientesApi.get(`/list/${page}`)
         dispatch(setClientes({clientes:data.result.clientes,page:data.result.page,amount:data.result.amount}))
     }
 }
@@ -13,7 +13,7 @@ export const getClientes=(page = 0)=>{
 export const getCliente=(id)=>{
     return async(dispatch,getState)=>{
         dispatch(startLoadingClientes());
-        const {data} = await clientesApi.get(`/clients/getClient/${id}`)
+        const {data} = await clientesApi.get(`/getClient/${id}`)
         dispatch(setClientes({clientes:[data.result.cliente]}))
     }
 }
@@ -21,15 +21,15 @@ export const getCliente=(id)=>{
 export const createCliente = (data)=>{
     return async(dispatch)=>{
         dispatch(startLoadingClientes());
-        const {data} = await clientesApi.get(`/clients/create`)
-        dispatch(setClientes({clientes:data.result.clientes,page:data.result.page,amount:data.result.amount}))
+        await clientesApi.post(`/create`)
+        getClientes()
     }
 }
 
 export const DeleteCliente = (id)=>{
     return async(dispatch)=>{
         dispatch(startLoadingClientes());
-        const {data} = await clientesApi.get(`/clients/delete/${id}`)
+        const {data} = await clientesApi.delete(`/clients/delete/${id}`)
         dispatch(setClientes({clientes:data.result.clientes,page:data.result.page,amount:data.result.amount}))
     }
 }

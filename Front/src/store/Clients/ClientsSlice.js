@@ -20,12 +20,7 @@ export const ClientsSlice = createSlice({
       state.amount = action.payload.amount
       state.clientes = action.payload.clientes
     },
-    setCliente: (state, action) => {
-      console.log(action.payload.cliente);
-      state.isLoading=false;
-      state.clientes = action.payload.clientes
-    },
   },
 });
 
-export const { startLoadingClientes,setClientes } = ClientsSlice.actions;
+export const { startLoadingClientes,setClientes,setCliente } = ClientsSlice.actions;
