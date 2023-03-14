@@ -10,22 +10,25 @@ import { Divider, List, ListItem } from "@mui/joy";
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import { ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 
-export const BillsList = ({ cliente,open,setOpen }) => {
-  const { isLoadingBills, facturas, amount } = useSelector(
-    (state) => state.facturas
-  );
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getFacturas(cliente));
-  }, []);
+export const BillsList = ({ cliente, open, setOpen }) => {
+  const { isLoadingBills, facturas, amount } = useSelector((state) => state.facturas);
 
-  useEffect(() => {
-    if (facturas.length > 0) {
-      console.log("facturas cargadas");
-    }
-  }, [isLoadingBills]);
+  if (open) {
 
-  return (
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+      dispatch(getFacturas(cliente));
+    }, []);
+
+    useEffect(() => {
+      if (facturas.length > 0) {
+        console.log("facturas cargadas");
+      }
+    }, [isLoadingBills]);
+
+
+    return (
       <Modal
         aria-labelledby="modal-title"
         aria-describedby="modal-desc"
@@ -66,21 +69,22 @@ export const BillsList = ({ cliente,open,setOpen }) => {
             Esto es una prueba para mostrar facturas
           </Typography>
           <nav aria-label="main clients">
-          <List>
-            {facturas&&facturas.map((factura) => (
-                <ListItem  key={factura.id} >
-                    <ListItemButton>
-                        <ListItemIcon>
-                        <ReceiptIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={factura.fecha + " - " + factura.importe} />
-                    </ListItemButton>
+            <List>
+              {facturas && facturas.map((factura) => (
+                <ListItem key={factura.id} >
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <ReceiptIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={factura.fecha.toLocaleDateString("es-ES") + " - " + factura.importe} />
+                  </ListItemButton>
                 </ListItem>
-            ))}
-          </List>
-          <Divider />
-        </nav>          
+              ))}
+            </List>
+            <Divider />
+          </nav>
         </Sheet>
       </Modal>
-  );
-};
+    );
+  };
+}
