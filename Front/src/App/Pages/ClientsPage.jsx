@@ -19,6 +19,7 @@ export const ClientPage= () => {
     <MainLayout>
         <ClientList/>
         <Link  to={"/register"}><ColorButton variant="contain" sx={{mt:3, width:"55%"}} >Registrar Nuevo Cliente</ColorButton></Link>
+        <Link  to={"/billing"}><ColorButton variant="contain" sx={{mt:3, width:"55%"}} >Cargar Factura Cliente</ColorButton></Link>
     </MainLayout>
   )
 }
