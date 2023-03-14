@@ -4,47 +4,58 @@ import Grid from "@mui/material/Grid";
 import Autocomplete from "@mui/material/Autocomplete";
 import { MainLayout } from "../Layout/MainLayout";
 import { useForm } from "../../hooks";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import { getCiudades } from "../../store/Cities/thunks";
+import { createCliente } from "../../store/Clients/thunks";
 
 
 
 
-export const RegisterPage = () => {
-
-  const dispatch = useDispatch();
-  const {ciudades} = useSelector((state) => state.cities);
-
-  useEffect(() => {
-    dispatch(getCiudades());
-    console.log("useEfect",options);
-    if(ciudades.length>0){
-      setOptions(ciudades)
-      setCiudad(obtenerCiudad())
-    }
-  }, [ciudad])
-
-
+export const ClientsRegisterPage = () => {
   const initialState= {
     nombre: "",
-    apelldio: "",
+    apellido: "",
     direccion: "",
-    ciudad:"",
     correo:"",
     contraseña:"",
     vContraseña:""
   }
+  const dispatch = useDispatch();
+  const {ciudades} = useSelector((state) => state.cities);
+  const { nombre,apellido,direccion,email,contraseña,vContraseña, onInputChange, formState } = useForm(initialState);
+  const [ciudad, setCiudad] = useState('')
 
-  const { nombre,apellido,direccion,ciudad,correo,contraseña,vContraseña, onInputChange, formState } = useForm(initialState);
-  const [value, setValue] = React.useState(options[0]);
+  useEffect(() => {
+    dispatch(getCiudades());
+  }, [])
+
+  const handleChange = (event) => {
+    console.log(event.target.value);
+    setCiudad(event.target.value);
+  };
 
   const onSubmit=(event)=>{
     event.preventDefault();
-    console.log("aca estoy",value.id)
+    console.log("aca estoy",cliente)
+    const clientData = { 
+      nombre,
+      apellido,
+      domicilio,
+      ciudad,
+      email,
+      password,
+      habilitado:true
+    }
+    dispatch(createCliente(clientData))
   }
 
   return (
-    <MainLayout title="Crear Cuenta">
+    <MainLayout title="Registrar Cliente">
       <form onSubmit={onSubmit}>
         <Grid container>
           <Grid item xs={12} sx={{ mt: 2 }}>
@@ -52,7 +63,7 @@ export const RegisterPage = () => {
               label="Nombre"
               name="nombre"
               value={nombre}
-              onInputChange={onInputChange}
+              onChange={onInputChange}
               type="text"
               placeholder="John"
               fullWidth
@@ -62,7 +73,7 @@ export const RegisterPage = () => {
             <TextField
               name="apellido"
               value={apellido}
-              onInputChange={onInputChange}
+              onChange={onInputChange}
               label="Apellido"
               type="text"
               placeholder="Doe"
@@ -73,32 +84,26 @@ export const RegisterPage = () => {
             <TextField
               name="direccion"
               value={direccion}
-              onInputChange={onInputChange}
-              label="Domicilio"
+              onChange={onInputChange}
+              label="Dirección"
               type="text"
               placeholder="Calle 1 Nro 1"
               fullWidth
             />
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
-            <Autocomplete
-              name="ciudad"
-              value={ciudad}
-              onInputChange={onInputChange}
-              disablePortal
-              id="combo-box-demo"
-              options={options}
-              onChange={(event, newValue) => {
-                setValue(newValue);
-              }}
-              renderInput={(params) => <TextField {...params} label="Movie" />}
-            />
+          <FormControl fullWidth sx={{textAlign:"left"}}>
+            <InputLabel id="demo-simple-select-label">Ciudad</InputLabel>
+            <Select name={"ciudad"} value={ciudad} onChange={handleChange}>
+                {ciudades.map((ciudad)=>(<MenuItem key={ciudad.id} value={ciudad.id}>{ciudad.label}</MenuItem>))}
+              </Select>
+          </FormControl>
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
             name="email"
             value={email}
-            onInputChange={onInputChange}
+            onChange={onInputChange}
               label="Correo"
               type="email"
               placeholder="Correo@google.com"
@@ -109,7 +114,7 @@ export const RegisterPage = () => {
             <TextField
             name="contraseña"
             value={contraseña}
-            onInputChange={onInputChange}
+            onChange={onInputChange}
               label="Contraseña"
               type="password"
               placeholder="Contraseña"
@@ -120,7 +125,7 @@ export const RegisterPage = () => {
             <TextField
             name="vContraseña"
             value={vContraseña}
-            onInputChange={onInputChange}
+            onChange={onInputChange}
               label="Contraseña"
               type="password"
               placeholder="Contraseña"

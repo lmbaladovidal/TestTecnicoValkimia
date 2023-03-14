@@ -1,1 +1,4 @@
-export * from './RegisterPage'
+
+export * from './ClientsRegisterPage';
+export * from './ClientUpdate';
+export * from './ClientsPage'

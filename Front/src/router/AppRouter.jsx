@@ -1,13 +1,11 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { RegisterPage } from '../App/Pages'
-import { ClientPage } from '../App/Pages/ClientsPage'
-import { ClientUpdate } from '../App/Pages/ClientUpdate'
+import { ClientsRegisterPage,ClientPage,ClientUpdate } from '../App/Pages'
 
 export const AppRouter = () => {
     return (
         <Routes>
             <Route path='/' element={<ClientPage/>}/>
-            <Route path='register' element={<RegisterPage/>} />
+            <Route path='register' element={<ClientsRegisterPage/>} />
             <Route path='/clientUpdate/:idCliente' element={<ClientUpdate/>} />
         </Routes>
     )

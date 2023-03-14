@@ -88,8 +88,8 @@ const deleteCliente = async (req, res) => {
 const updateCliente = async (req, res) => {
   try {
     const checksum = validateCliente.validar(req.body);
-    console.log(checksum);
-    if (checksum !== 7) {
+    console.log("Actualizar Clientes",req.body,checksum);
+    if (checksum !== 8) {
       res.json({
         data: {
           msj: "Error en los campos proporcionados",
@@ -125,7 +125,7 @@ const updateCliente = async (req, res) => {
       });
     }
   } catch (error) {
-    res.json({ error });
+    res.json({ data:{error} });
   }
 };
 
@@ -133,6 +133,7 @@ const updateCliente = async (req, res) => {
 
 const listClientes = async (req, res) => {
   try {
+    console.log("Listar Clientes");
     const amount = await Clientes.count();
     const clientes = await Clientes.findAll({
       offset: 10 * req.params.page,

@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   ciudades:[],
   amount:0,
-  isLoading:false
+  isLoadingCities:false
 };
 
 export const CitiesSlice = createSlice({
@@ -11,10 +11,10 @@ export const CitiesSlice = createSlice({
   initialState,
   reducers: {
     startLoadingCiudades: (state) => {
-      state.isLoading = true;
+      state.isLoadingCities = true;
     },
     setCiudades: (state, action) => {
-      state.isLoading = false;
+      state.isLoadingCities = false;
       state.amount = action.payload.amount
       state.ciudades  = action.payload.ciudades.map( ciudad => { 
         return { label: ciudad.nombre , id : ciudad.id }; 

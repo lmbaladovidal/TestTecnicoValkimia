@@ -12,7 +12,7 @@ const validarNumero = (value) => {
 
 const validarEmail = (value) => {
   const regEx = new RegExp(
-    "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$"
+    /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g
   );
   return regEx.test(value) ? true : false;
 };
@@ -28,7 +28,7 @@ const validarPassword = (value) => {
 export const validations = {
   validarTamaño,
   validarTexto,
-  validarNumero
+  validarNumero,
   validarEmail,
   validarPassword,
 };

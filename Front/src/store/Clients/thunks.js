@@ -20,9 +20,17 @@ export const getCliente=(id)=>{
 
 export const createCliente = (data)=>{
     return async(dispatch)=>{
+        await clientesApi.post(`/create`,{
+            nombre:data.nombre,
+            apellido:data.apellido,
+            direccion:data.direccion,
+            email:data.email,
+            idCiudad:data.idCiudad,
+            contraseña:data.contraseña,
+            habilitado:data.habilitado,
+        })
         dispatch(startLoadingClientes());
-        await clientesApi.post(`/create`)
-        getClientes()
+        dispatch(setClientes({clientes:data.result.clientes,page:data.result.page,amount:data.result.amount}))
     }
 }
 
@@ -34,10 +42,22 @@ export const DeleteCliente = (id)=>{
     }
 }
 
-export const UpdateClienteCliente = (id)=>{
+export const UpdateCliente = (data)=>{
     return async(dispatch)=>{
-        dispatch(startLoadingClientes());
-        const {data} = await clientesApi.get(`/clients/put/${id}`)
-        dispatch(setClientes({clientes:data.result.clientes,page:data.result.page,amount:data.result.amount}))
+        console.log("SoyData en el thuk",data);
+        await clientesApi.put(`/put/${data.id}`,{
+            nombre:data.nombre,
+            apellido:data.apellido,
+            domicilio:data.direccion,
+            email:data.email,
+            idCiudad:data.idCiudad,
+            password:data.password,
+            habilitado:data.habilitado,
+        }, {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        getClientes()
     }
 }
