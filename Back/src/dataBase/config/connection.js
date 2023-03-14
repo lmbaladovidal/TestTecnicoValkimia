@@ -1,10 +1,11 @@
+require('dotenv').config()
 const { Sequelize } = require('sequelize');
 
 // Option 1: Passing a connection URI
 const connection = new Sequelize('facturacionvalkimia','root','',{
-    host:'localhost',
-    dialect:'mysql',
-    port:3030
+    host:process.env.HOST,
+    dialect:process.env.DIALECT,
+    port:process.env.PORT
     //logging:false
 }) // Example for sqlite
 

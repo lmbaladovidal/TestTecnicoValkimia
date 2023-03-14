@@ -6,15 +6,17 @@ import Modal from '@mui/joy/Modal';
 import ModalClose from '@mui/joy/ModalClose';
 import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
+import { Divider, List, ListItem } from "@mui/joy";
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import { ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 
 export const BillsList = ({ cliente,open,setOpen }) => {
   const { isLoadingBills, facturas, amount } = useSelector(
     (state) => state.facturas
   );
   const dispatch = useDispatch();
-
   useEffect(() => {
-    dispatch(getFacturas());
+    dispatch(getFacturas(cliente));
   }, []);
 
   useEffect(() => {
@@ -63,6 +65,21 @@ export const BillsList = ({ cliente,open,setOpen }) => {
           <Typography id="modal-desc" textColor="text.tertiary">
             Esto es una prueba para mostrar facturas
           </Typography>
+          <nav aria-label="main clients">
+          <List>
+            {facturas&&facturas.map((factura) => (
+                <ListItem  key={factura.id} >
+                    <ListItemButton>
+                        <ListItemIcon>
+                        <ReceiptIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={factura.fecha + " - " + factura.importe} />
+                    </ListItemButton>
+                </ListItem>
+            ))}
+          </List>
+          <Divider />
+        </nav>          
         </Sheet>
       </Modal>
   );
