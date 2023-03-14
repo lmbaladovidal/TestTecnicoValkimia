@@ -20,14 +20,14 @@ export const ClientsRegisterPage = () => {
   const initialState= {
     nombre: "",
     apellido: "",
-    direccion: "",
+    domicilio: "",
     correo:"",
-    contraseña:"",
+    password:"",
     vContraseña:""
   }
   const dispatch = useDispatch();
   const {ciudades} = useSelector((state) => state.cities);
-  const { nombre,apellido,direccion,email,contraseña,vContraseña, onInputChange, formState } = useForm(initialState);
+  const { nombre,apellido,domicilio,email,password,vPassword, onInputChange, formState } = useForm(initialState);
   const [ciudad, setCiudad] = useState('')
 
   useEffect(() => {
@@ -41,16 +41,16 @@ export const ClientsRegisterPage = () => {
 
   const onSubmit=(event)=>{
     event.preventDefault();
-    console.log("aca estoy",cliente)
     const clientData = { 
       nombre,
       apellido,
       domicilio,
-      ciudad,
+      idCiudad:ciudad,
       email,
       password,
       habilitado:true
     }
+    //console.log(clientData);
     dispatch(createCliente(clientData))
   }
 
@@ -82,8 +82,8 @@ export const ClientsRegisterPage = () => {
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
-              name="direccion"
-              value={direccion}
+              name="domicilio"
+              value={domicilio}
               onChange={onInputChange}
               label="Dirección"
               type="text"
@@ -112,8 +112,8 @@ export const ClientsRegisterPage = () => {
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
-            name="contraseña"
-            value={contraseña}
+            name="password"
+            value={password}
             onChange={onInputChange}
               label="Contraseña"
               type="password"
@@ -123,8 +123,8 @@ export const ClientsRegisterPage = () => {
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
-            name="vContraseña"
-            value={vContraseña}
+            name="vPassword"
+            value={vPassword}
             onChange={onInputChange}
               label="Contraseña"
               type="password"

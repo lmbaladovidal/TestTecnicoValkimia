@@ -30,8 +30,10 @@ const createDummyCliente = async (req, res) => {
 };
 //INICIO ABM CLIENTES
 const createCliente = (req, res) => {
+  console.log(req.body);
   const checksum = validateCliente.validar(req.body);
-  if (checksum !== 7) {
+  console.log("Check sum",checksum);
+  if (checksum !== 8) {
     res.json({
       data: {
         msj: "Error en los campos proporcionados",

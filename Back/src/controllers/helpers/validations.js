@@ -21,7 +21,7 @@ const validarPassword = (value) => {
   const regEx = new RegExp(
     /(?=(.*[0-9]))(?=.*[\!@#$%^&*()\\[\]{}\-_+=|:;"'<>,./?])(?=.*[a-z])(?=(.*[A-Z]))(?=(.*)).{6,}/
   );
-  console.log("validation desde password", value, regEx.test(value));
+  
   return regEx.test(value) ? true : false;
 };
 

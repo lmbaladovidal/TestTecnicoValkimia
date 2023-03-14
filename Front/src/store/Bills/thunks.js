@@ -2,10 +2,10 @@ import { billsApi } from "../../Api/BillsApi";
 import { setFacturas, startLoadingfacturas } from "./BillsSlice";
 
 
-export const getCiudades=()=>{
+export const getFacturas=(id)=>{
     return async(dispatch,getState)=>{
         dispatch(startLoadingfacturas());
-        const {data} = await billsApi.get('/list')
+        const {data} = await billsApi.get(`/list/${id}`)
         dispatch(setFacturas({facturas:data.result.facturas,amount:data.result.amount}))
     }
 }

@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   facturas:[],
   amount:0,
-  isLoading:false
+  isLoadingBills:false
 };
 
 export const FacturasSlice = createSlice({
@@ -14,7 +14,7 @@ export const FacturasSlice = createSlice({
       state.isLoading = true;
     },
     setFacturas: (state, action) => {
-      state.isLoading = false;
+      state.isLoadingBills = false;
       state.amount = action.payload.amount
       state.facturas  = action.payload.facturas
     },

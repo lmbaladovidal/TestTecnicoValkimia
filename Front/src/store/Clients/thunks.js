@@ -19,18 +19,18 @@ export const getCliente=(id)=>{
 }
 
 export const createCliente = (data)=>{
+    console.log("data desde createCliente",data);
     return async(dispatch)=>{
         await clientesApi.post(`/create`,{
             nombre:data.nombre,
             apellido:data.apellido,
-            direccion:data.direccion,
+            domicilio:data.domicilio,
             email:data.email,
             idCiudad:data.idCiudad,
-            contraseña:data.contraseña,
+            password:data.password,
             habilitado:data.habilitado,
         })
-        dispatch(startLoadingClientes());
-        dispatch(setClientes({clientes:data.result.clientes,page:data.result.page,amount:data.result.amount}))
+        getClientes()
     }
 }
 

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getClientes } from "../../store/Clients/thunks";
-import { AbmClientes } from "./AbmClients";
+import { ButtonsClients } from "./ButtonsClients";
 import Box from "@mui/material/Box";
 import Stack from '@mui/system/Stack'
 import List from "@mui/material/List";
@@ -44,7 +44,7 @@ const nextPage = (e)=>{
   }
 
   const obtenerCantidadPaginas = ()=>{
-    return amount%10==0?amount/10:amount/10+1;
+    return parseInt(amount%10==0?amount/10:amount/10+1);
   }
 
   return (
@@ -63,7 +63,7 @@ const nextPage = (e)=>{
                         </ListItemIcon>
                         <ListItemText primary={generarTexto(cliente)} />
                     </ListItemButton>
-                    <AbmClientes idCliente={cliente.id}/>
+                    <ButtonsClients idCliente={cliente.id}/>
                 </ListItem>
             ))}
           </List>
