@@ -7,17 +7,17 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 
-export const ButtonsClients = ({idCliente}) => {
+export const ButtonsClients = ({cliente}) => {
   const [open, setOpen] = useState(false)
+  console.log(cliente);
   return (
     <Stack direction="row" spacing={2}>
         <Button variant="outlined"  onClick={() => setOpen(true)} startIcon={< ReceiptIcon/>}>
           Ver Facuturas
         </Button>
-        <BillsList cliente={idCliente} open={open} setOpen={setOpen}/>
-        {/* {open?<BillsList cliente={idCliente} open={open} setOpen={setOpen}/>:null} */}
+        {open?<BillsList cliente={cliente} open={open} setOpen={setOpen}/>:null}
         <Button variant="outlined" startIcon={< EditIcon/>} >
-            <Link to={`/clientUpdate/${idCliente}`}>Editar</Link> 
+            <Link to={`/clientUpdate/${cliente.id}`}>Editar</Link> 
         </Button>
         <Button variant="contained" endIcon={< DeleteIcon/>}>
             Eliminar

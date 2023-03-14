@@ -63,7 +63,7 @@ const nextPage = (e)=>{
                         </ListItemIcon>
                         <ListItemText primary={generarTexto(cliente)} />
                     </ListItemButton>
-                    <ButtonsClients idCliente={cliente.id}/>
+                    <ButtonsClients cliente={{id:cliente.id,nombre:cliente.nombre+" "+cliente.apellido}}/>
                 </ListItem>
             ))}
           </List>
