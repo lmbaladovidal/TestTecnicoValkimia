@@ -12,6 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { getCiudades } from "../../store/Cities/thunks";
 import { createCliente } from "../../store/Clients/thunks";
+import { validations } from "../../helpers";
 
 
 
@@ -53,6 +54,29 @@ export const ClientsRegisterPage = () => {
     //console.log(clientData);
     dispatch(createCliente(clientData))
   }
+  const onNombreBlur = ({target})=>{
+      validations.validarTamaño()
+      validations.validarTexto()
+  }
+  const onApellidoBlur = ({target})=>{
+    validations.validarTamaño()
+      validations.validarTexto()    
+  }
+  const onDomicilioBlur = ({target})=>{
+    validations.validarTamaño()
+      validations.validarTexto()
+  }
+  const onEmailBlur = ({target})=>{
+      validations.validarEmail()
+  }
+  const onPasswordBlur = ({target})=>{
+    validations.validarPassword()
+  }
+
+  const onVPasswordChange=({target})=>{
+    onInputChange({target})
+    console.log("password==vpassword",password==vPassword)
+  }
 
   return (
     <MainLayout title="Registrar Cliente">
@@ -64,6 +88,7 @@ export const ClientsRegisterPage = () => {
               name="nombre"
               value={nombre}
               onChange={onInputChange}
+              onBlur={onNombreBlur}
               type="text"
               placeholder="John"
               fullWidth
@@ -73,6 +98,7 @@ export const ClientsRegisterPage = () => {
             <TextField
               name="apellido"
               value={apellido}
+              onBlur={onApellidoBlur}
               onChange={onInputChange}
               label="Apellido"
               type="text"
@@ -84,6 +110,7 @@ export const ClientsRegisterPage = () => {
             <TextField
               name="domicilio"
               value={domicilio}
+              onBlur={onDomicilioBlur}
               onChange={onInputChange}
               label="Dirección"
               type="text"
@@ -103,6 +130,7 @@ export const ClientsRegisterPage = () => {
             <TextField
             name="email"
             value={email}
+            onBlur={onEmailBlur}
             onChange={onInputChange}
               label="Correo"
               type="email"
@@ -114,6 +142,7 @@ export const ClientsRegisterPage = () => {
             <TextField
             name="password"
             value={password}
+            onBlur={onPasswordBlur}
             onChange={onInputChange}
               label="Contraseña"
               type="password"
@@ -125,7 +154,7 @@ export const ClientsRegisterPage = () => {
             <TextField
             name="vPassword"
             value={vPassword}
-            onChange={onInputChange}
+            onChange={onVPasswordChange}
               label="Contraseña"
               type="password"
               placeholder="Contraseña"
