@@ -20,8 +20,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import { Divider, List, ListItem } from "@mui/joy";
 import Inventory2Icon from '@mui/icons-material/Inventory2';
-import { createFactura } from "../../store/Bills/thunks";
 import { ModalAddBill } from "./ModalAddBill";
+import { ModalAlert} from "./ModalAlert";
 
 
 export const AddBill = () => {
@@ -36,20 +36,21 @@ export const AddBill = () => {
   const dispatch = useDispatch();
   const [cliente, setCliente] = useState('')
   const [open, setOpen] = useState(false)
+  const [openAlert, setOpenAlert] = useState(false)
   const [fecha, setFecha] = useState('')
   const [detalleProductos, setDetalleProductos] = useState([])
   const [dataFactura, setDataFactura] = useState({})
+
   useEffect(() => {
     dispatch(getAllClientes());
   }, []);
 
 
-
+  const [titulo, setTitulo] = useState('')
   const { detalle, importe, onInputChange,cleanInput } = useForm(initialState)
 
   const handleChange = (event) => {
     setCliente(event.target.value);
-    console.log("cliente",cliente);
   };
 
   const handleFechaChange = ({c}) => {
@@ -60,9 +61,9 @@ export const AddBill = () => {
     setFecha(fecha)
   };
 
-const agregarDetalle = (event)=>{
+const agregarDetalle = ({target})=>{
   if (event.keyCode === 13) {
-      setDetalleProductos([...detalleProductos, event.target.value])
+      setDetalleProductos([...detalleProductos, target.value])
       cleanInput(event)
     }
 }
@@ -77,39 +78,39 @@ const formatearTextoDetalle = ()=>{
   const onFechaBlur = ({ target }) => {
     if (validations.validarFecha(fecha)) {
       error[0] = 1
-      return
+      return true
     }
     error[0] = 0
-  }
-
-  const onDetalleBlur = ({ target }) => {
-    if (validations.validarTamaño(fecha, 3)) {
-      error[1] = 1
-      return
-    }
-    error[1] = 0
+    return false
   }
 
   const onImporteBlur = ({ target }) => {
     if (importe == 0) {
       error[2] = 0;
-      return
+      return false
     } else if (!validations.validarNumero(importe)) {
       error[2] = 0
-      return
+      return false
     }
     error[2] = 1
+    return true
   }
 
 const onSubmit=(e)=>{
   e.preventDefault();
+  if (error.find(element => element == 0)){
+      setTitulo('Error en los campos')
+      setOpenAlert(true)
+      return
+  }
   setDataFactura({
     idCliente:cliente,
     fecha,
     importe,
     detalle:formatearTextoDetalle()
   })
-  setOpen(true)
+  setTitulo('Factura grabada con éxito')
+  setOpenAlert(true)
 }
 
   return (
@@ -185,6 +186,7 @@ const onSubmit=(e)=>{
           Cargar Factura           
         </Button>
         {open?<ModalAddBill dataFactura={dataFactura} open={open} setOpen={setOpen}/>:null}
+        {opne?<ModalAlert titulo={titulo} open={openAlert} setOpen={setOpenAlert}/>:null}
       </Stack>
     </MainLayout>
   )

@@ -17,6 +17,7 @@ import Checkbox from "@mui/material/Checkbox";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from '@mui/icons-material/Edit';
 import { Stack } from "@mui/system";
+import { ModalAlert } from "../components/ModalAlert";
 
 export const ClientUpdate = () => {
   const { idCliente } = useParams();
@@ -30,6 +31,7 @@ export const ClientUpdate = () => {
   const [ciudad, setCiudad] = useState("");
   const [habilitado, setHabilitado] = useState(false);
   const [password, setPassword] = useState("");
+  const [vPassword, setVPassword] = useState("");
 
   useEffect(() => {
     dispatch(getCliente(idCliente));
@@ -54,6 +56,8 @@ export const ClientUpdate = () => {
     }
   }, []);
 
+  let error = [0,0,0,0,0]
+
   const obtenerCiudad = () => {
     return ciudades.filter((ciudadItem) => {
       return ciudadItem.id == ciudad;
@@ -73,19 +77,84 @@ export const ClientUpdate = () => {
     setEmail(target.value);
   };
   const handleChange = (event) => {
-    console.log(event.target.value);
     setCiudad(event.target.value);
   };
   const onPasswordChange = ({ target }) => {
     setPassword(target.value);
   };
+  const onVPasswordChange=({target})=>{
+    setVPassword(target.value)
+    console.log(`${password}==${vpassword}`,password==vPassword)
+  }
   const onHabilitadoChange = ({ target }) => {
-    console.log(target);
     setHabilitado(target.checked);
   };
 
+
+  const onNombreBlur = ({target})=>{
+    if (validations.validarTamaño(target.value)){
+      error[0] = 0;
+      return
+    }
+    if (validations.validarTexto(target.value)){
+      error[0] = 0;
+      return
+    }
+    error[0]=1
+  }
+
+  const onApellidoBlur = ({target})=>{
+    if (validations.validarTamaño(target.value)){
+      error[1] = 0;
+      return
+    }
+    if (validations.validarTexto(target.value)){
+      error[1] = 0;
+      return
+    }
+    error[1]=1   
+  }
+
+  const onDireccionBlur = ({target})=>{
+    if (validations.validarTamaño(target.value)){
+      error[2] = 0;
+      return
+    }
+    if (validations.validarTexto(target.value)){
+      error[2] = 0;
+      return
+    }
+    error[2]=1
+  }
+
+  const onEmailBlur = ({target})=>{
+    if (validations.validarEmail(target.value)){
+      error[3] = 0;
+      return
+    }
+    error[3] = 1
+  }
+
+  const onPasswordBlur = ({target})=>{
+    if (validations.validarPassword(target.value)){
+      error[4]=0;
+      return
+    }
+  }
+
+  const onVPasswordBlur = ({target})=>{
+    validations.validarPassword(target.value)
+  }
+
+
+
   const onSubmit = (event) => {
     event.preventDefault();
+    if (error.find(element => element == 0)){
+      setTitulo('Error en los campos')
+      setOpenAlert(true)
+      return
+    }
     const clientData = {
       id: idCliente,
       nombre,
@@ -96,9 +165,11 @@ export const ClientUpdate = () => {
       password: password == "" ? clientes[0].password : password,
       habilitado,
     };
-    console.log(clientData);
     dispatch(updateCliente(clientData));
+    setTitulo('Cliente actualizado exitosamente')
+    setOpenAlert(true)
   };
+
   return (
     <MainLayout>
       <h1>Editar Cliente</h1>
@@ -106,38 +177,50 @@ export const ClientUpdate = () => {
         <Grid container>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
+              required={true}
               label="Nombre"
               type="text"
               placeholder="John"
-              fullWidth
               value={nombre}
               onChange={onNombreChange}
+              onBlur={onNombreBlur}
+              error={false}
+              helperText=""
+              fullWidth
             />
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
+              required={true}
               label="Apellido"
               type="text"
               placeholder="Doe"
               value={apellido}
               onChange={onApellidoChange}
+              onBlur={onApellidoBlur}
+              error={false}
+              helperText=""
               fullWidth
             />
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
+              required={true}
               label="Domicilio"
               type="text"
               placeholder="Calle 1 Nro 1"
               value={direccion}
               onChange={onDireccionChange}
+              onBlur={onDireccionBlur}
+              error={false}
+              helperText=""
               fullWidth
             />
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <FormControl fullWidth sx={{ textAlign: "left" }}>
               <InputLabel id="demo-simple-select-label">Ciudad</InputLabel>
-              <Select value={ciudad} onChange={handleChange}>
+              <Select value={ciudad} onChange={handleChange} error={false} helperText="Campo Obligatorio" required={true}>
                 {ciudades &&
                   ciudades.map((ciudad) => (
                     <MenuItem key={ciudad.id} value={ciudad.id}>
@@ -149,29 +232,43 @@ export const ClientUpdate = () => {
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
+              required={true}
               label="Correo"
               type="email"
               placeholder="Correo@google.com"
               value={email}
               onChange={onEmailChange}
+              onBlur={onEmailBlur}
+              error={false}
+              helperText=""
               fullWidth
             />
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
+              required={true}
               label="Contraseña"
               type="password"
               placeholder="Contraseña"
               value={password}
               onChange={onPasswordChange}
+              onBlur={onPasswordBlur}
+              error={false}
+              helperText=""
               fullWidth
             />
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
+              required={true}
               label="Repetir Contraseña"
               type="password"
               placeholder="Repetir Contraseña"
+              value={vPassword}
+              onChange={onVPasswordChange}
+              onBlur={onVPasswordBlur}
+              error={false}
+              helperText=""
               fullWidth
             />
           </Grid>
@@ -203,6 +300,7 @@ export const ClientUpdate = () => {
           </Grid>
         </Grid>
       </form>
+      {opne?<ModalAlert titulo={titulo} open={openAlert} setOpen={setOpenAlert}/>:null}
     </MainLayout>
   );
 };
