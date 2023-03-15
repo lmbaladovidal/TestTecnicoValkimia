@@ -21,7 +21,7 @@ export const ClientList = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getClientes());
-  }, []);
+  }, [amount]);
 
 const prevPage = (e)=>{
   if(page!=0){

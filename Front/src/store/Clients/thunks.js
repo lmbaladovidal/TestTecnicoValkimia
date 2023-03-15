@@ -10,6 +10,15 @@ export const getClientes=(page = 0)=>{
     }
 }
 
+export const getAllClientes=()=>{
+    return async(dispatch,getState)=>{
+        dispatch(startLoadingClientes());
+        const {data} = await clientesApi.get(`/list/all`)
+        console.log("data desde getAllClientes",data);
+        dispatch(setClientes({clientes:data.result.clientes,page:data.result.page,amount:data.result.amount}))
+    }
+}
+
 export const getCliente=(id)=>{
     return async(dispatch,getState)=>{
         dispatch(startLoadingClientes());
@@ -30,19 +39,19 @@ export const createCliente = (data)=>{
             password:data.password,
             habilitado:data.habilitado,
         })
-        getClientes()
+        dispatch(getClientes())
     }
 }
 
-export const DeleteCliente = (id)=>{
+export const deleteCliente = (id)=>{
     return async(dispatch)=>{
-        dispatch(startLoadingClientes());
-        const {data} = await clientesApi.delete(`/clients/delete/${id}`)
-        dispatch(setClientes({clientes:data.result.clientes,page:data.result.page,amount:data.result.amount}))
+        const {data} = await clientesApi.delete(`/delete/${id}`)
+        dispatch(getClientes())
+        
     }
 }
 
-export const UpdateCliente = (data)=>{
+export const updateCliente = (data)=>{
     return async(dispatch)=>{
         console.log("SoyData en el thuk",data);
         await clientesApi.put(`/put/${data.id}`,{
@@ -58,6 +67,6 @@ export const UpdateCliente = (data)=>{
               'Content-Type': 'application/x-www-form-urlencoded'
             }
         })
-        getClientes()
+        dispatch(getClientes())
     }
 }

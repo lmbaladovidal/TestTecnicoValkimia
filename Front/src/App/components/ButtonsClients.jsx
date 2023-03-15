@@ -6,22 +6,24 @@ import Stack  from '@mui/system/Stack'
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ReceiptIcon from '@mui/icons-material/Receipt';
+import { ModalDelete } from './ModalDelete';
 
 export const ButtonsClients = ({cliente}) => {
-  const [open, setOpen] = useState(false)
-  console.log(cliente);
+  const [openModalBills, setOpenModalBills] = useState(false)
+  const [openModalDelete, setOpenModalDelete] = useState(false)
   return (
     <Stack direction="row" spacing={2}>
-        <Button variant="outlined"  onClick={() => setOpen(true)} startIcon={< ReceiptIcon/>}>
+        <Button variant="outlined"  onClick={() => setOpenModalBills(true)} startIcon={< ReceiptIcon/>}>
           Ver Facuturas
         </Button>
-        {open?<BillsList cliente={cliente} open={open} setOpen={setOpen}/>:null}
+        {openModalBills?<BillsList cliente={cliente} open={openModalBills} setOpen={setOpenModalBills}/>:null}
         <Button variant="outlined" startIcon={< EditIcon/>} >
             <Link to={`/clientUpdate/${cliente.id}`}>Editar</Link> 
         </Button>
-        <Button variant="contained" endIcon={< DeleteIcon/>}>
-            Eliminar
+        <Button variant="contained" onClick={() => setOpenModalDelete(true)} endIcon={< DeleteIcon/>}>
+          Eliminar            
         </Button>
+        {openModalDelete?<ModalDelete cliente={cliente} open={openModalDelete} setOpen={setOpenModalDelete}/>:null}
   </Stack>
   )
 }

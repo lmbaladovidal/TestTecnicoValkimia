@@ -12,6 +12,14 @@ export const useForm = (initialForm = {}) => {
         })        
     }
 
+    const cleanInput = ({target})=>{
+        const { name,value } = target;
+        setFormState({
+            ...formState,
+            [ name ]:''
+        })        
+    }
+
     const onResetForm = ()=>{
         setFormState(initialForm)
     }
@@ -20,7 +28,8 @@ export const useForm = (initialForm = {}) => {
         ...formState,
         formState,
         onInputChange,
-        onResetForm
+        onResetForm,
+        cleanInput
 
     }
 }

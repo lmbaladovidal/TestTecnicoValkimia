@@ -1,17 +1,78 @@
-import { validations } from "../../helpers/"
 import { useForm } from "../../hooks"
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { MainLayout } from "../Layout/MainLayout"
+import { getAllClientes } from "../../store/Clients/thunks";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import {DateTimePicker} from '@mui/x-date-pickers/DateTimePicker';
+import { validations } from "../../helpers/"
+import { ListItemIcon, ListItemText, Stack } from "@mui/material";
+import { Link, useParams } from "react-router-dom";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
+import { Divider, List, ListItem } from "@mui/joy";
+import Inventory2Icon from '@mui/icons-material/Inventory2';
+import { createFactura } from "../../store/Bills/thunks";
+import { ModalAddBill } from "./ModalAddBill";
 
 
-export const AddBill = ({ idCliente }) => {
+export const AddBill = () => {
 
   const initialState = {
-    fecha: '',
     detalle: '',
     importe: 0
   }
   const error = [0, 0, 0]
-  const { fecha, detalle, importe } = useForm(initialState)
+
+  const { page, clientes, isLoading, amount } = useSelector((state) => state.client);
+  const dispatch = useDispatch();
+  const [cliente, setCliente] = useState('')
+  const [open, setOpen] = useState(false)
+  const [fecha, setFecha] = useState('')
+  const [detalleProductos, setDetalleProductos] = useState([])
+  const [dataFactura, setDataFactura] = useState({})
+  useEffect(() => {
+    dispatch(getAllClientes());
+  }, []);
+
+
+
+  const { detalle, importe, onInputChange,cleanInput } = useForm(initialState)
+
+  const handleChange = (event) => {
+    setCliente(event.target.value);
+    console.log("cliente",cliente);
+  };
+
+  const handleFechaChange = ({c}) => {
+    let fecha = ""
+    fecha +=c.year+"-"
+    fecha += c.month>9?c.month+"-":"0"+c.month+"-"
+    fecha += c.day>9?c.day:"0"+c.day
+    setFecha(fecha)
+  };
+
+const agregarDetalle = (event)=>{
+  if (event.keyCode === 13) {
+      setDetalleProductos([...detalleProductos, event.target.value])
+      cleanInput(event)
+    }
+}
+
+
+const formatearTextoDetalle = ()=>{
+  let auxDetalle = ""
+  detalleProductos.map(element=>{auxDetalle += element+";"})
+  return auxDetalle;
+}
 
   const onFechaBlur = ({ target }) => {
     if (validations.validarFecha(fecha)) {
@@ -40,21 +101,36 @@ export const AddBill = ({ idCliente }) => {
     error[2] = 1
   }
 
+const onSubmit=(e)=>{
+  e.preventDefault();
+  setDataFactura({
+    idCliente:cliente,
+    fecha,
+    importe,
+    detalle:formatearTextoDetalle()
+  })
+  setOpen(true)
+}
+
   return (
     <MainLayout>
       <form onSubmit={onSubmit}>
         <Grid container>
+          <FormControl fullWidth sx={{textAlign:"left"}}>
+            <InputLabel id="demo-simple-select-label">Cliente</InputLabel>
+            <Select name={"cliente"} value={cliente} onChange={handleChange}>
+                {clientes.map((cliente)=>(<MenuItem key={cliente.id} value={cliente.id}>{cliente.nombre+" "+cliente.apellido}</MenuItem>))}
+              </Select>
+          </FormControl>
           <Grid item xs={12} sx={{ mt: 2 }}>
-            <TextField
-              label="Fecha"
-              name="fecha"
-              value={fecha}
-              onChange={onInputChange}
-              onBlur={onFechaBlur}
-              type="text"
-              placeholder="John"
-              fullWidth
-            />
+          <LocalizationProvider dateAdapter={AdapterLuxon} >
+            <DateTimePicker 
+                //value={fecha}
+                onChange={handleFechaChange}
+                onBlur={onFechaBlur} label="Fecha de factura"
+                item xs={12} sx={{ mt: 2, width:"100%" }}
+                 />
+          </LocalizationProvider>
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
@@ -62,9 +138,10 @@ export const AddBill = ({ idCliente }) => {
               value={detalle}
               onChange={onInputChange}
               onBlur={onDetalleBlur}
+              onKeyUp={agregarDetalle}
               label="Detalle"
               type="text"
-              placeholder="Doe"
+              placeholder="Presione 'Enter' para agregar el producto"
               fullWidth
             />
           </Grid>
@@ -81,7 +158,34 @@ export const AddBill = ({ idCliente }) => {
             />
           </Grid>
         </Grid>
+        <nav aria-label="main clients">
+          <List>
+            {detalleProductos.length > 0 && detalleProductos.map((producto,i) => (
+                <ListItem key={producto+i}>
+                    <ListItemIcon>
+                      <Inventory2Icon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={producto}
+                    />
+                </ListItem>
+              ))}
+          </List>
+          <Divider />
+        </nav>
       </form>
+      <Stack direction="row" spacing={2} 
+          alignItems='center'
+          justifyContent='center'
+          mt={5} >
+        <Button variant="outlined" startIcon={< ArrowBackIcon/>} >
+            <Link to={`/`}>Volver</Link> 
+        </Button>
+        <Button variant="contained" onClick={onSubmit} endIcon={< SaveAltIcon/>}>
+          Cargar Factura           
+        </Button>
+        {open?<ModalAddBill dataFactura={dataFactura} open={open} setOpen={setOpen}/>:null}
+      </Stack>
     </MainLayout>
   )
 }

@@ -1,102 +1,103 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { MainLayout } from "../Layout/MainLayout";
-import { getCliente, UpdateCliente } from "../../store/Clients/thunks";
+import { getCliente, updateCliente } from "../../store/Clients/thunks";
 import { getCiudades } from "../../store/Cities/thunks";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
-import MenuItem from '@mui/material/MenuItem';
+import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Autocomplete from "@mui/material/Autocomplete";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import EditIcon from '@mui/icons-material/Edit';
+import { Stack } from "@mui/system";
 
 export const ClientUpdate = () => {
-
   const { idCliente } = useParams();
-  const { clientes,isLoading } = useSelector((state) => state.client);
-  const {ciudades, isLoadingCities} = useSelector((state) => state.cities);
+  const { clientes, isLoading } = useSelector((state) => state.client);
+  const { ciudades, isLoadingCities } = useSelector((state) => state.cities);
   const dispatch = useDispatch();
-  const [nombre, setNombre] = useState('')
-  const [apellido, setApellido] = useState('')
-  const [direccion, setDireccion] = useState('')
-  const [email, setEmail] = useState('')
-  const [ciudad, setCiudad] = useState('')
-  const [habilitado, setHabilitado] = useState(false)
-  const [password, setPassword] = useState('')
-  
+  const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
+  const [direccion, setDireccion] = useState("");
+  const [email, setEmail] = useState("");
+  const [ciudad, setCiudad] = useState("");
+  const [habilitado, setHabilitado] = useState(false);
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     dispatch(getCliente(idCliente));
   }, []);
 
   useEffect(() => {
-    if(clientes.length>0&&(clientes[0].id == idCliente)){
+    if (clientes.length > 0 && clientes[0].id == idCliente) {
       console.log(clientes[0]);
-      setNombre(clientes[0].nombre)
-      setApellido(clientes[0].apellido)
-      setDireccion(clientes[0].domicilio)
-      setEmail(clientes[0].email)
-      setCiudad(clientes[0].idCiudad)
-      setHabilitado(clientes[0].habilitado)
+      setNombre(clientes[0].nombre);
+      setApellido(clientes[0].apellido);
+      setDireccion(clientes[0].domicilio);
+      setEmail(clientes[0].email);
+      setCiudad(clientes[0].idCiudad);
+      setHabilitado(clientes[0].habilitado);
     }
-  }, [isLoading])
-  
+  }, [isLoading]);
 
   useEffect(() => {
     dispatch(getCiudades());
-    if(ciudades.length>0){
-      setCiudad(obtenerCiudad())
+    if (ciudades.length > 0) {
+      setCiudad(obtenerCiudad());
     }
-  }, [])
-  
-  const obtenerCiudad=()=>{
-    return ciudades.filter(ciudadItem=>{return ciudadItem.id==ciudad})[0];
-  }
+  }, []);
 
-  const onNombreChange = ({target})=>{
-    setNombre(target.value)
-  }
-  const onApellidoChange = ({target})=>{
-    setApellido(target.value)
-  }
-  const onDireccionChange = ({target})=>{
-    setDireccion(target.value)
-  }
-  const onEmailChange = ({target})=>{
-    setEmail(target.value)
-  }
+  const obtenerCiudad = () => {
+    return ciudades.filter((ciudadItem) => {
+      return ciudadItem.id == ciudad;
+    })[0];
+  };
+
+  const onNombreChange = ({ target }) => {
+    setNombre(target.value);
+  };
+  const onApellidoChange = ({ target }) => {
+    setApellido(target.value);
+  };
+  const onDireccionChange = ({ target }) => {
+    setDireccion(target.value);
+  };
+  const onEmailChange = ({ target }) => {
+    setEmail(target.value);
+  };
   const handleChange = (event) => {
     console.log(event.target.value);
     setCiudad(event.target.value);
   };
-  const onPasswordChange = ({target})=>{
-    setPassword(target.value)
-  }
-  const onHabilitadoChange = ({target})=>{
+  const onPasswordChange = ({ target }) => {
+    setPassword(target.value);
+  };
+  const onHabilitadoChange = ({ target }) => {
     console.log(target);
-    setHabilitado(target.checked)
-  }
-  
-  
+    setHabilitado(target.checked);
+  };
+
   const onSubmit = (event) => {
     event.preventDefault();
-    const clientData = { 
-        id:idCliente,
-        nombre,
-        apellido,
-        direccion,
-        idCiudad:ciudad,
-        email,
-        password:password==''?clientes[0].password:password,
-        habilitado
-    }
+    const clientData = {
+      id: idCliente,
+      nombre,
+      apellido,
+      direccion,
+      idCiudad: ciudad,
+      email,
+      password: password == "" ? clientes[0].password : password,
+      habilitado,
+    };
     console.log(clientData);
-    dispatch(UpdateCliente(clientData))
+    dispatch(updateCliente(clientData));
   };
   return (
     <MainLayout>
@@ -134,12 +135,17 @@ export const ClientUpdate = () => {
             />
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
-          <FormControl fullWidth sx={{textAlign:"left"}}>
-            <InputLabel id="demo-simple-select-label">Ciudad</InputLabel>
-            <Select value={ciudad} onChange={handleChange}>
-                {ciudades&&ciudades.map((ciudad)=>(<MenuItem key={ciudad.id} value={ciudad.id}>{ciudad.label}</MenuItem>))}
+            <FormControl fullWidth sx={{ textAlign: "left" }}>
+              <InputLabel id="demo-simple-select-label">Ciudad</InputLabel>
+              <Select value={ciudad} onChange={handleChange}>
+                {ciudades &&
+                  ciudades.map((ciudad) => (
+                    <MenuItem key={ciudad.id} value={ciudad.id}>
+                      {ciudad.label}
+                    </MenuItem>
+                  ))}
               </Select>
-          </FormControl>
+            </FormControl>
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
@@ -170,13 +176,29 @@ export const ClientUpdate = () => {
             />
           </Grid>
           <Grid>
-            <FormControlLabel control={<Checkbox onClick={onHabilitadoChange} checked={habilitado}/>} label="Habilitado" />
+            <FormControlLabel
+              control={
+                <Checkbox onClick={onHabilitadoChange} checked={habilitado} />
+              }
+              label="Habilitado"
+            />
           </Grid>
           <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
             <Grid item xs={12}>
-              <Button type="submit" variant="contained" fullWidth>
-                Guardar Cambios
-              </Button>
+              <Stack
+                direction="row"
+                spacing={2}
+                alignItems="center"
+                justifyContent="center"
+                mt={5}
+              >
+                <Button variant="outlined" startIcon={<ArrowBackIcon />}>
+                  <Link to={`/`}>Volver</Link>
+                </Button>
+                <Button type="submit" variant="contained" endIcon={<EditIcon/>}>
+                  Guardar Cambios
+                </Button>
+              </Stack>
             </Grid>
           </Grid>
         </Grid>
