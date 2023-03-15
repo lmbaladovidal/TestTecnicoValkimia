@@ -31,7 +31,6 @@ export const BillsList = ({ cliente, open, setOpen }) => {
   }, []);
 
   const parsarTexto = (fecha) => {
-    console.log("Soy fecha",fecha);
     const fechaFormateada = fecha.slice(0, 10);
     let cadAux = fechaFormateada.split("-");
     return cadAux[2] + "-" + cadAux[1] + "-" + cadAux[0];

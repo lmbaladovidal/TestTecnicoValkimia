@@ -29,16 +29,26 @@ export const ClientsRegisterPage = () => {
     nombre: "",
     apellido: "",
     domicilio: "",
-    correo:"",
+    email:"",
     password:"",
-    vContraseña:""
+    vPassword:""
   }
+
+  const objErrors ={
+    nombre: false,
+    apellido: false,
+    domicilio: false,
+    email:false,
+    password:false,
+    vPassword:false }
+
   const dispatch = useDispatch();
   const {ciudades} = useSelector((state) => state.cities);
   const { nombre,apellido,domicilio,email,password,vPassword, onInputChange } = useForm(initialState);
   const [cliente, setCliente] = useState({})
   const [ciudad, setCiudad] = useState('')
   const [titulo, setTitulo] = useState('')
+  const [tituloAlert, setTituloAlert] = useState('')
   const [openAlert, setOpenAlert] = useState(false)
   const [openYesNo, setOpenYesNo] = useState(false)
   
@@ -48,99 +58,100 @@ export const ClientsRegisterPage = () => {
   const [errorEmail, setErrorEmail] = useState({error:false,message:''})
   const [errorPass, setErrorPass] = useState({error:false,message:''})
   const [errorVpass, setErrorVpass] = useState({error:false,message:''})
+  const [errors, setErrors] = useState(objErrors)
 
-  let error = [0,0,0,0,0]
 
   useEffect(() => {
     dispatch(getCiudades());
   }, [])
 
   const handleChange = (event) => {
-    console.log(event.target.value);
     setCiudad(event.target.value);
   };
-
+  
   
   const onNombreBlur = ({target})=>{
-    console.log(target);
     if (!validations.validarTamaño(target.value,2)){
-      error[0] = 0;
-      console.log("paso");
-      setErrorName({error:false,message:''})
+      setErrors({...errors,nombre:false})
+      setErrorName({error:true,message:'El tamaño minimo es de 3 caracteres'})
       target.helpertext="Nombre demasiado corto"
       return
     }
     if (!validations.validarTexto(target.value)){
-      error[0] = 0;
-      target.error = true 
+      setErrors({...errors,nombre:false})
+      setErrorName({error:true,message:'Solo se permiten caracteres alfabéticos'})
       return
     }
-    error[0]=1
+    setErrors({...errors,nombre:true})
     setErrorName({error:false,message:''})
   }
   const onApellidoBlur = ({target})=>{
-    if (!validations.validarTamaño(target.value)){
-      error[1] = 0;
-      target.error = true
+    if (!validations.validarTamaño(target.value,2)){
+      setErrors({...errors,apellido:false})
+      setErrorApellido({error:true,message:'El tamaño minimo es de 3 caracteres'})
       return
     }
     if (!validations.validarTexto(target.value)){
-      error[1] = 0;
-      setErrorApellido({error:false,message:''})
+      setErrors({...errors,apellido:false})
+      setErrorApellido({error:true,message:'El tamaño minimo es de 3 caracteres'})
       return
     }
-    error[1]=1    
+    setErrors({...errors,apellido:true})      
     setErrorApellido({error:false,message:''})
   }
   const onDomicilioBlur = ({target})=>{
-    if (!validations.validarTamaño(target.value)){
-      error[2] = 0;
-      setErrorDomicilio({error:false,message:''})
+    if (!validations.validarTamaño(target.value,5)){
+      setErrors({...errors,domicilio:false})
+      setErrorDomicilio({error:true,message:'El tamaño minimo es de 5 caracteres'})
       return
     }
-    if (!validations.validarTexto(target.value)){
-      error[2] = 0;
-      setErrorDomicilio({error:false,message:''})
-      return
-    }
-    error[2]=1
+    setErrors({...errors,domicilio:true})
+
     setErrorDomicilio({error:false,message:''})
   }
+
   const onEmailBlur = ({target})=>{
     if (!validations.validarEmail(target.value)){
-      error[3] = 0;
-      setErrorEmail({error:false,message:''})
+      setErrors({...errors,email:false})
+      setErrorEmail({error:true,message:'Formato del mail es invalido'})
       return
     }
-    error[3] = 1
+    setErrors({...errors,email:true})
     setErrorEmail({error:false,message:''})
   }
   const onPasswordBlur = ({target})=>{
     if (!validations.validarPassword(target.value)){
-      error[4]=0;
-      setErrorPass({error:false,message:''})
+      setErrors({...errors,password:false})
+      setErrorPass({error:true,message:'El password debe contener al menos una mayuscula, una minuscula, un número y un simbolo'})
       return
     }
+    setErrors({...errors,password:true})
     setErrorPass({error:false,message:''})
   }
 
-  const onVPasswordChange=({target})=>{
-    onInputChange({target})
-    console.log(target.value);
-    if (!password==target.value){
-      setErrorVpass({error:false,message:''})
+  const onVPasswordChange=(event)=>{
+    onInputChange(event)
+    if (password!=event.target.value){
+      setErrors({...errors,vPassword:false})
+      setErrorVpass({error:true,message:'las contraseñas no coinciden'})
+      return
     }
+    setErrors({...errors,vPassword:true})
     setErrorVpass({error:false,message:''})
   }
 
 
   const onSubmit=(event)=>{
       event.preventDefault();
-      if (error.find(element => element == 0)){
-          setTitulo('Error en los campos')
+      const valores = Object.values(errors); 
+      for(let i=0; i< valores.length; i++){
+        if (!valores[i]){
+          setTituloAlert('Error en los campos')
           setOpenAlert(true)
           return
+        }
       }
+
       setCliente({ 
         nombre,
         apellido,
@@ -151,6 +162,7 @@ export const ClientsRegisterPage = () => {
         habilitado:true
       })
       setOpenYesNo(true)
+      setTituloAlert('Exito en la operacion')
       setTitulo("¿Desea Registrar al cliente?")
     }
 
@@ -238,7 +250,7 @@ export const ClientsRegisterPage = () => {
                 label="Contraseña"
                 type="password"
                 placeholder="Contraseña"
-                error={errorPass.apellido}
+                error={errorPass.error}
                 helperText={errorPass.message}
                 fullWidth
               />
@@ -249,7 +261,7 @@ export const ClientsRegisterPage = () => {
                 name="vPassword"
                 value={vPassword}
                 onChange={onVPasswordChange}
-                label="Contraseña"
+                label="Repita la contraseña"
                 type="password"
                 placeholder="Contraseña"
                 error={errorVpass.error}
@@ -278,7 +290,7 @@ export const ClientsRegisterPage = () => {
           </Grid>
         </form>
         {openYesNo?<ModalYesNo functionToDispatch={createCliente} dataDispatch={cliente} titulo={titulo} open={openYesNo} setOpen={setOpenYesNo} setOpenAlert={setOpenAlert}/>:null}
-        {openAlert?<ModalAlert open={openAlert} setOpen={setOpenAlert}/>:null}
+        {openAlert?<ModalAlert title={tituloAlert} open={openAlert} setOpen={setOpenAlert}/>:null}
       </Grid>
     </MainLayout>
   );

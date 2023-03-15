@@ -11,7 +11,8 @@ const validarNumero = (value) => {
 };
 
 const validarFecha = (value)=>{
-  const regEx = new RegExp(/^(?:0?[1-9]|1[1-2])([\-/.])(3[01]|[12][0-9]|0?[1-9])\1\d{4}$/)
+  console.log("soy valudar fecha",value);
+  const regEx = new RegExp(/^\d{4}([\-/.])(0?[1-9]|1[1-2])\1(3[01]|[12][0-9]|0?[1-9])$/)
   return regEx.test(value)?true:false;
 }
 

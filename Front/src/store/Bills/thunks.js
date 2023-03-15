@@ -12,6 +12,7 @@ export const getFacturas=(id)=>{
 
 export const createFactura = (data)=>{
     return async(dispatch)=>{
+        console.log("data desdede createFactura",data);
         dispatch(startLoadingfacturas());
         await billsApi.post(`/create`,{
             idCliente:data.idCliente,

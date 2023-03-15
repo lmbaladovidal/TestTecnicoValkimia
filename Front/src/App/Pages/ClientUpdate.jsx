@@ -19,9 +19,21 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Stack } from "@mui/system";
 import { ModalAlert } from "../components/Modals/ModalAlert"
 import { ModalYesNo } from "../components/Modals/ModalYesNo";
+import { validations } from "../../helpers";
 
 export const ClientUpdate = () => {
-  
+
+
+  const objErrors = {
+    nombre: true,
+    apellido: true,
+    domicilio: true,
+    email: true,
+    password: true,
+    vPassword: true
+  }
+
+
   const { idCliente } = useParams();
   const { clientes, isLoading } = useSelector((state) => state.client);
   const { ciudades, isLoadingCities } = useSelector((state) => state.cities);
@@ -38,6 +50,7 @@ export const ClientUpdate = () => {
   const [openAlert, setOpenAlert] = useState(false)
   const [openYesNo, setOpenYesNo] = useState(false)
   const [titulo, setTitulo] = useState('')
+  const [tituloAlert, setTituloAlert] = useState('')
 
   useEffect(() => {
     dispatch(getCliente(idCliente));
@@ -45,7 +58,6 @@ export const ClientUpdate = () => {
 
   useEffect(() => {
     if (clientes.length > 0 && clientes[0].id == idCliente) {
-      console.log(clientes[0]);
       setNombre(clientes[0].nombre);
       setApellido(clientes[0].apellido);
       setDireccion(clientes[0].domicilio);
@@ -62,7 +74,14 @@ export const ClientUpdate = () => {
     }
   }, []);
 
-  let error = [0,0,0,0,0]
+
+  const [errorName, setErrorName] = useState({ error: false, message: '' })
+  const [errorApellido, setErrorApellido] = useState({ error: false, message: '' })
+  const [errorDomicilio, setErrorDomicilio] = useState({ error: false, message: '' })
+  const [errorEmail, setErrorEmail] = useState({ error: false, message: '' })
+  const [errorPass, setErrorPass] = useState({ error: false, message: '' })
+  const [errorVpass, setErrorVpass] = useState({ error: false, message: '' })
+  const [errors, setErrors] = useState(objErrors)
 
   const obtenerCiudad = () => {
     return ciudades.filter((ciudadItem) => {
@@ -76,7 +95,7 @@ export const ClientUpdate = () => {
   const onApellidoChange = ({ target }) => {
     setApellido(target.value);
   };
-  const onDireccionChange = ({ target }) => {
+  const onDomicilioChange = ({ target }) => {
     setDireccion(target.value);
   };
   const onEmailChange = ({ target }) => {
@@ -88,73 +107,100 @@ export const ClientUpdate = () => {
   const onPasswordChange = ({ target }) => {
     setPassword(target.value);
   };
-  const onVPasswordChange=({target})=>{
-    setVPassword(target.value)
-    console.log(`${password}==${target.value}`,password==target.value)
-  }
+
   const onHabilitadoChange = ({ target }) => {
     setHabilitado(target.checked);
   };
 
 
-  const onNombreBlur = ({target})=>{
-    if (!validations.validarTamaño(target.value)){
-      error[0] = 0;
+  const onNombreBlur = ({ target }) => {
+    if (!validations.validarTamaño(target.value, 2)) {
+      setErrors({ ...errors, nombre: false })
+      setErrorName({ error: true, message: 'El tamaño minimo es de 3 caracteres' })
       return
     }
-    if (!validations.validarTexto(target.value)){
-      error[0] = 0;
+    if (!validations.validarTexto(target.value)) {
+      setErrors({ ...errors, nombre: false })
+      setErrorName({ error: true, message: 'Solo se permiten caracteres alfabéticos' })
       return
     }
-    error[0]=1
+    setErrors({ ...errors, nombre: true })
+    setErrorName({ error: false, message: '' })
+  }
+  const onApellidoBlur = ({ target }) => {
+    if (!validations.validarTamaño(target.value, 2)) {
+      setErrors({ ...errors, apellido: false })
+      setErrorApellido({ error: true, message: 'El tamaño minimo es de 3 caracteres' })
+      return
+    }
+    if (!validations.validarTexto(target.value)) {
+      setErrors({ ...errors, apellido: false })
+      setErrorApellido({ error: true, message: 'El tamaño minimo es de 3 caracteres' })
+      return
+    }
+    setErrors({ ...errors, apellido: true })
+    setErrorApellido({ error: false, message: '' })
+  }
+  const onDomicilioBlur = ({ target }) => {
+    if (!validations.validarTamaño(target.value, 5)) {
+      setErrors({ ...errors, domicilio: false })
+      setErrorDomicilio({ error: true, message: 'El tamaño minimo es de 5 caracteres' })
+      return
+    }
+    setErrors({ ...errors, domicilio: true })
+
+    setErrorDomicilio({ error: false, message: '' })
   }
 
-  const onApellidoBlur = ({target})=>{
-    if (!validations.validarTamaño(target.value)){
-      error[1] = 0;
+  const onEmailBlur = ({ target }) => {
+    if (!validations.validarEmail(target.value)) {
+      setErrors({ ...errors, email: false })
+      setErrorEmail({ error: true, message: 'Formato del mail es invalido' })
       return
     }
-    if (!validations.validarTexto(target.value)){
-      error[1] = 0;
+    setErrors({ ...errors, email: true })
+    setErrorEmail({ error: false, message: '' })
+  }
+  const onPasswordBlur = ({ target }) => {
+    if (target.value.length == 0) {
+      setErrors({ ...errors, password: true })
+      setErrorPass({ error: false, message: '' })
       return
     }
-    error[1]=1   
+    if (!validations.validarPassword(target.value)) {
+      setErrors({ ...errors, password: false })
+      setErrorPass({ error: true, message: 'El password debe contener al menos una mayuscula, una minuscula, un número y un simbolo' })
+      return
+    }
+    setErrors({ ...errors, password: true })
+    setErrorPass({ error: false, message: '' })
   }
 
-  const onDireccionBlur = ({target})=>{
-    if (!validations.validarTamaño(target.value)){
-      error[2] = 0;
+  const onVPasswordChange = (event) => {
+    setVPassword(event.target.value)
+    if (event.target.value.length == 0) {
+      setErrors({ ...errors, vPassword: true })
+      setErrorVpass({ error: false, message: '' })
       return
     }
-    if (!validations.validarTexto(target.value)){
-      error[2] = 0;
+    if (password != event.target.value) {
+      setErrors({ ...errors, vPassword: false })
+      setErrorVpass({ error: true, message: 'las contraseñas no coinciden' })
       return
     }
-    error[2]=1
+    setErrors({ ...errors, vPassword: true })
+    setErrorVpass({ error: false, message: '' })
   }
-
-  const onEmailBlur = ({target})=>{
-    if (!validations.validarEmail(target.value)){
-      error[3] = 0;
-      return
-    }
-    error[3] = 1
-  }
-
-  const onPasswordBlur = ({target})=>{
-    if (!validations.validarPassword(target.value)){
-      error[4]=0;
-      return
-    }
-  }
-
 
   const onSubmit = (event) => {
     event.preventDefault();
-    if (error.find(element => element == 0)){
-      setTitulo('Error en los campos')
-      setOpenAlert(true)
-      return
+    const valores = Object.values(errors);
+    for (let i = 0; i < valores.length; i++) {
+      if (!valores[i]) {
+        setTituloAlert('Error en los campos')
+        setOpenAlert(true)
+        return
+      }
     }
     setCliente({
       id: idCliente,
@@ -167,6 +213,7 @@ export const ClientUpdate = () => {
       habilitado,
     })
     dispatch(updateCliente(cliente));
+    setTituloAlert('Exito en la operacion')
     setTitulo('¿Desea editar al cliente?')
     setOpenYesNo(true)
   };
@@ -185,8 +232,8 @@ export const ClientUpdate = () => {
               value={nombre}
               onChange={onNombreChange}
               onBlur={onNombreBlur}
-              error={false}
-              helperText=""
+              error={errorName.error}
+              helperText={errorName.message}
               fullWidth
             />
           </Grid>
@@ -199,8 +246,8 @@ export const ClientUpdate = () => {
               value={apellido}
               onChange={onApellidoChange}
               onBlur={onApellidoBlur}
-              error={false}
-              helperText=""
+              error={errorApellido.error}
+              helperText={errorApellido.message}
               fullWidth
             />
           </Grid>
@@ -211,10 +258,10 @@ export const ClientUpdate = () => {
               type="text"
               placeholder="Calle 1 Nro 1"
               value={direccion}
-              onChange={onDireccionChange}
-              onBlur={onDireccionBlur}
-              error={false}
-              helperText=""
+              onChange={onDomicilioChange}
+              onBlur={onDomicilioBlur}
+              error={errorDomicilio.error}
+              helperText={errorDomicilio.message}
               fullWidth
             />
           </Grid>
@@ -240,8 +287,8 @@ export const ClientUpdate = () => {
               value={email}
               onChange={onEmailChange}
               onBlur={onEmailBlur}
-              error={false}
-              helperText=""
+              error={errorEmail.error}
+              helperText={errorEmail.message}
               fullWidth
             />
           </Grid>
@@ -253,8 +300,8 @@ export const ClientUpdate = () => {
               value={password}
               onChange={onPasswordChange}
               onBlur={onPasswordBlur}
-              error={false}
-              helperText=""
+              error={errorPass.error}
+              helperText={errorPass.message}
               fullWidth
             />
           </Grid>
@@ -265,8 +312,8 @@ export const ClientUpdate = () => {
               placeholder="Repetir Contraseña"
               value={vPassword}
               onChange={onVPasswordChange}
-              error={false}
-              helperText=""
+              error={errorVpass.error}
+              helperText={errorVpass.message}
               fullWidth
             />
           </Grid>
@@ -290,7 +337,7 @@ export const ClientUpdate = () => {
                 <Button variant="outlined" startIcon={<ArrowBackIcon />}>
                   <Link to={`/`}>Volver</Link>
                 </Button>
-                <Button type="submit" variant="contained" endIcon={<EditIcon/>}>
+                <Button type="submit" variant="contained" endIcon={<EditIcon />}>
                   Guardar Cambios
                 </Button>
               </Stack>
@@ -298,8 +345,8 @@ export const ClientUpdate = () => {
           </Grid>
         </Grid>
       </form>
-      {openYesNo?<ModalYesNo functionToDispatch={updateCliente} dataDispatch={cliente} titulo={titulo} open={openYesNo} setOpen={setOpenYesNo} setOpenAlert={setOpenAlert}/>:null}
-      {openAlert?<ModalAlert open={openAlert} setOpen={setOpenAlert}/>:null}
+      {openYesNo ? <ModalYesNo functionToDispatch={updateCliente} dataDispatch={cliente} titulo={titulo} open={openYesNo} setOpen={setOpenYesNo} setOpenAlert={setOpenAlert} /> : null}
+      {openAlert ? <ModalAlert title={tituloAlert} open={openAlert} setOpen={setOpenAlert} /> : null}
     </MainLayout>
   );
 };

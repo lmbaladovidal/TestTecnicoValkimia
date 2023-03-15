@@ -11,7 +11,6 @@ import { ModalAlert } from './Modals/ModalAlert';
 import { deleteCliente } from '../../store/Clients/thunks';
 
 export const ButtonsClients = ({ cliente }) => {
-  console.log("cliente desde buttons", cliente);
   const [openModalBills, setOpenModalBills] = useState(false)
   const [openModalAlert, setOpenModalAlert] = useState(false)
   const [openYesNo, setOpenYesNo] = useState(false)

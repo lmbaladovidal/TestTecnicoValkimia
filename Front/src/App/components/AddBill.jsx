@@ -12,7 +12,7 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import {DateTimePicker} from '@mui/x-date-pickers/DateTimePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { validations } from "../../helpers/"
 import { ListItemIcon, ListItemText, Stack } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
@@ -21,7 +21,9 @@ import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import { Divider, List, ListItem } from "@mui/joy";
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 import { ModalAddBill } from "./Modals/ModalAddBill";
-import { ModalAlert} from "./Modals/ModalAlert";
+import { ModalAlert } from "./Modals/ModalAlert";
+import { ModalYesNo } from "./Modals/ModalYesNo";
+import { createFactura } from "../../store/Bills/thunks";
 
 
 export const AddBill = () => {
@@ -30,16 +32,29 @@ export const AddBill = () => {
     detalle: '',
     importe: 0
   }
-  const error = [0, 0, 0]
+  const objErrors = {
+    cliente: false,
+    detalle: false,
+    importe: false,
+    fecha: false
+  }
 
   const { page, clientes, isLoading, amount } = useSelector((state) => state.client);
   const dispatch = useDispatch();
   const [cliente, setCliente] = useState('')
-  const [open, setOpen] = useState(false)
   const [openAlert, setOpenAlert] = useState(false)
+  const [tituloAlert, setTituloAlert] = useState('')
   const [fecha, setFecha] = useState('')
   const [detalleProductos, setDetalleProductos] = useState([])
   const [dataFactura, setDataFactura] = useState({})
+  const [openYesNo, setOpenYesNo] = useState(false)
+
+
+  const [errorCliente, setErrorCliente] = useState({ error: false, message: '' })
+  const [errorDetalle, setErrorDetalle] = useState({ error: false, message: '' })
+  const [errorImporte, seterrorImporte] = useState({ error: false, message: '' })
+  const [errorFecha, setErrorFecha] = useState({ error: false, message: '' })
+  const [errors, setErrors] = useState(objErrors)
 
   useEffect(() => {
     dispatch(getAllClientes());
@@ -47,105 +62,136 @@ export const AddBill = () => {
 
 
   const [titulo, setTitulo] = useState('')
-  const { detalle, importe, onInputChange,cleanInput } = useForm(initialState)
+  const { detalle, importe, onInputChange, cleanInput } = useForm(initialState)
 
   const handleChange = (event) => {
     setCliente(event.target.value);
+    setErrorCliente({error:false,message:''})
+    setErrors({...errors,cliente:true})
   };
 
-  const handleFechaChange = ({c}) => {
-    let fecha = ""
-    fecha +=c.year+"-"
-    fecha += c.month>9?c.month+"-":"0"+c.month+"-"
-    fecha += c.day>9?c.day:"0"+c.day
-    setFecha(fecha)
+  const handleFechaChange = ({ c }) => {
+    setErrorFecha({error:false,message:""})
+    setErrors({ ...errors, fecha: true })
+    let fechaAux = ""
+    fechaAux += c.year + "-"
+    fechaAux += c.month > 9 ? c.month + "-" : "0" + c.month + "-"
+    fechaAux += c.day > 9 ? c.day : "0" + c.day
+    setFecha(fechaAux)
+    // if (!validations.validarFecha(fechaAux)) {
+    //   setErrors({ ...errors, fecha: false })
+    //   setErrorFecha({error:true,message:"Debe seleccionar una fecha valida"})
+    //   return 
+    // }
+    setErrors({ ...errors, fecha: true })
+    setErrorFecha({error:false,message:""})
   };
 
-const agregarDetalle = (event)=>{
-  if (!validations.validarTamaño(event.target.value,2)){
-    event.target.error = true
-    return
-  }
-  if (event.keyCode === 13) {
-      console.log("paso");
-      setDetalleProductos([...detalleProductos, event.target.value])
-      cleanInput(event)
-    }
-}
-
-
-const formatearTextoDetalle = ()=>{
-  let auxDetalle = ""
-  detalleProductos.map(element=>{auxDetalle += element+";"})
-  return auxDetalle;
-}
-
-  const onFechaBlur = ({ target }) => {
-    if (!validations.validarFecha(fecha)) {
-      error[0] = 1
-      return true
-    }
-    error[0] = 0
-    return false
-  }
-
-  const onDetalleBlur = (event)=>{
-    if (!validations.validarTamaño(event.target.value,2)){
+  const agregarDetalle = (event) => {
+    if (!validations.validarTamaño(event.target.value, 2)) {
       event.target.error = true
       return
     }
+    if (event.keyCode === 13) {
+      setDetalleProductos([...detalleProductos, event.target.value])
       cleanInput(event)
+    }
+  }
+
+
+  const formatearTextoDetalle = () => {
+    let auxDetalle = ""
+    detalleProductos.map(element => { auxDetalle += element + ";" })
+    return auxDetalle;
+  }
+
+  const onDetalleBlur = (event) => {
+    if (!validations.validarTamaño(event.target.value, 2)&&event.target.value.length!=0) {
+      setErrorDetalle({error:true,message:"El detalle debe tener mas de dos caracteres"})
+      setErrors({ ...errors, detalle: false })
+      return
+    }
+    setErrorDetalle({error:false,message:""})
+    setErrors({ ...errors, detalle: true })
+    cleanInput(event)
   }
 
   const onImporteBlur = ({ target }) => {
-    if (importe == 0) {
-      error[2] = 0;
-      return false
+    if (parseFloat(importe) <= 0) {
+      seterrorImporte({error:true,message:"el importe debe ser mayor a 0"})
+      setErrors({ ...errors, importe: false })
+      return
     } else if (!validations.validarNumero(importe)) {
-      error[2] = 0
-      return false
+      seterrorImporte({error:true,message:"Solo se admiten valores numericos"})
+      setErrors({ ...errors, importe: false })
+      return
     }
-    error[2] = 1
-    return true
+    seterrorImporte({error:false,message:""})
+    setErrors({ ...errors, importe: true })
   }
 
-const onSubmit=(e)=>{
-  e.preventDefault();
-  if (error.find(element => element == 0)){
-      setTitulo('Error en los campos')
-      setOpenAlert(true)
-      return
+  const validarItemsEnDetalle = ()=>{
+    if (detalleProductos.length == 0) {
+      setErrors({ ...errors, importe: false })
+      setErrorDetalle({error:true,message:"debe haber al menos un item cargado"})
+    }
+    setErrorDetalle({error:false,message:""})
+    setErrors({ ...errors, detalle: true })
   }
-  setDataFactura({
-    idCliente:cliente,
-    fecha,
-    importe,
-    detalle:formatearTextoDetalle()
-  })
-  setTitulo('Factura grabada con éxito')
-  setOpen(true)
-}
+
+  const validarCliente = ()=>{
+    if(cliente==''){
+      setErrorCliente({error:true,message:'Debe seleccionar un cliente'})
+      setErrors({...errors,cliente:false})
+    }
+  }
+
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    validarItemsEnDetalle();
+    validarCliente();
+    const valores = Object.values(errors);
+    for (let i = 0; i < valores.length; i++) {
+      if (!valores[i]) {
+        setTituloAlert('Error en los campos')
+        setOpenAlert(true)
+        return
+      }
+    };
+    setDataFactura({
+      idCliente: cliente,
+      fecha,
+      importe,
+      detalle: formatearTextoDetalle()
+    })
+    setTitulo('Factura grabada con éxito')
+    setTituloAlert('Exito en la carga')
+    setOpenYesNo(true)
+  }
 
   return (
     <MainLayout>
       <form onSubmit={onSubmit}>
         <Grid container>
-          <FormControl fullWidth sx={{textAlign:"left"}}>
+          <FormControl fullWidth sx={{ textAlign: "left" }}>
             <InputLabel id="demo-simple-select-label">Cliente</InputLabel>
-            <Select name={"cliente"} value={cliente} onChange={handleChange} helpertext="Campor Requerido" required={true}>
-                {clientes && clientes.map((cliente)=>(<MenuItem key={cliente.id} value={cliente.id}>{cliente.nombre+" "+cliente.apellido}</MenuItem>))}
-              </Select>
+            <Select name={"cliente"} value={cliente} onChange={handleChange} helperText={errorCliente.message} required={true} error={errorCliente.error}>
+              {clientes && clientes.map((cliente) => (<MenuItem key={cliente.id} value={cliente.id}>{cliente.nombre + " " + cliente.apellido}</MenuItem>))}
+            </Select>
           </FormControl>
           <Grid item xs={12} sx={{ mt: 2 }}>
-          <LocalizationProvider dateAdapter={AdapterLuxon} >
-            <DateTimePicker 
+            <LocalizationProvider dateAdapter={AdapterLuxon} >
+              <DateTimePicker
                 required={true}
                 onChange={handleFechaChange}
-                onBlur={onFechaBlur} label="Fecha de factura"
-                item xs={12} sx={{ mt: 2, width:"100%" }
+                label="Fecha de factura"
+                item xs={12} sx={{ mt: 2, width: "100%" }
                 }
-                 />
-          </LocalizationProvider>
+                error={errorFecha.error}
+                helperText={errorFecha.message}
+              />
+            </LocalizationProvider>
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
@@ -157,6 +203,8 @@ const onSubmit=(e)=>{
               label="Detalle"
               type="text"
               placeholder="Presione 'Enter' para agregar el producto"
+              error={errorDetalle.error}
+              helperText={errorDetalle.message}
               fullWidth
             />
           </Grid>
@@ -169,8 +217,8 @@ const onSubmit=(e)=>{
               label="Importe"
               type="text"
               placeholder="importe"
-              error={false}
-              helpertext=""
+              error={errorImporte.error}
+              helperText={errorImporte.message}
               required={true}
               fullWidth
             />
@@ -178,32 +226,32 @@ const onSubmit=(e)=>{
         </Grid>
         <nav aria-label="main clients">
           <List>
-            {detalleProductos.length > 0 && detalleProductos.map((producto,i) => (
-                <ListItem key={producto+i}>
-                    <ListItemIcon>
-                      <Inventory2Icon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={producto}
-                    />
-                </ListItem>
-              ))}
+            {detalleProductos.length > 0 && detalleProductos.map((producto, i) => (
+              <ListItem key={producto + i}>
+                <ListItemIcon>
+                  <Inventory2Icon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={producto}
+                />
+              </ListItem>
+            ))}
           </List>
           <Divider />
         </nav>
       </form>
-      <Stack direction="row" spacing={2} 
-          alignItems='center'
-          justifyContent='center'
-          mt={5} >
-        <Button variant="outlined" startIcon={< ArrowBackIcon/>} >
-            <Link to={`/`}>Volver</Link> 
+      <Stack direction="row" spacing={2}
+        alignItems='center'
+        justifyContent='center'
+        mt={5} >
+        <Button variant="outlined" startIcon={< ArrowBackIcon />} >
+          <Link to={`/`}>Volver</Link>
         </Button>
-        <Button variant="contained" onClick={onSubmit} endIcon={< SaveAltIcon/>}>
-          Cargar Factura           
+        <Button variant="contained" onClick={onSubmit} endIcon={< SaveAltIcon />}>
+          Cargar Factura
         </Button>
-        {open?<ModalAddBill dataFactura={dataFactura} open={open} setOpen={setOpen} setOpenAlert={setOpenAlert}/>:null}
-        {openAlert?<ModalAlert open={openAlert} setOpen={setOpenAlert}/>:null}
+        {openYesNo ? <ModalYesNo functionToDispatch={createFactura} dataDispatch={dataFactura} titulo={titulo} open={openYesNo} setOpen={setOpenYesNo} setOpenAlert={setOpenAlert} /> : null}
+        {openAlert ? <ModalAlert title={tituloAlert} open={openAlert} setOpen={setOpenAlert} /> : null}
       </Stack>
     </MainLayout>
   )
