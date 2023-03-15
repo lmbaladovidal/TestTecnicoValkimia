@@ -1,6 +1,9 @@
+import { Sheet } from '@mui/joy';
+import { Button, Modal, Stack, Typography } from '@mui/material';
 import React from 'react'
+import { useDispatch } from 'react-redux';
 
-export const ModalYesNo = ({functionToDispatch, dataDispatch, titulo,setOpen,setOpenAlert}) => {
+export const ModalYesNo = ({ functionToDispatch, dataDispatch, titulo, open, setOpen, setOpenAlert }) => {
 
     const dispatch = useDispatch();
 
@@ -35,7 +38,7 @@ export const ModalYesNo = ({functionToDispatch, dataDispatch, titulo,setOpen,set
                     component="h2"
                     id="modal-title"
                     level="h4"
-                    textColor="inherit"
+                    textcolor="inherit"
                     fontWeight="lg"
                     mb={1}
                 >

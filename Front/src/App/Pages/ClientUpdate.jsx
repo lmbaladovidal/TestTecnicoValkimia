@@ -17,7 +17,7 @@ import Checkbox from "@mui/material/Checkbox";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from '@mui/icons-material/Edit';
 import { Stack } from "@mui/system";
-import { ModalAlert } from "../components/ModalError";
+import { ModalAlert } from "../components/Modals/ModalAlert"
 import { ModalYesNo } from "../components/Modals/ModalYesNo";
 
 export const ClientUpdate = () => {
@@ -37,6 +37,7 @@ export const ClientUpdate = () => {
   const [vPassword, setVPassword] = useState("");
   const [openAlert, setOpenAlert] = useState(false)
   const [openYesNo, setOpenYesNo] = useState(false)
+  const [titulo, setTitulo] = useState('')
 
   useEffect(() => {
     dispatch(getCliente(idCliente));
@@ -89,7 +90,7 @@ export const ClientUpdate = () => {
   };
   const onVPasswordChange=({target})=>{
     setVPassword(target.value)
-    console.log(`${password}==${vpassword}`,password==vPassword)
+    console.log(`${password}==${target.value}`,password==target.value)
   }
   const onHabilitadoChange = ({ target }) => {
     setHabilitado(target.checked);
@@ -97,11 +98,11 @@ export const ClientUpdate = () => {
 
 
   const onNombreBlur = ({target})=>{
-    if (validations.validarTamaño(target.value)){
+    if (!validations.validarTamaño(target.value)){
       error[0] = 0;
       return
     }
-    if (validations.validarTexto(target.value)){
+    if (!validations.validarTexto(target.value)){
       error[0] = 0;
       return
     }
@@ -109,11 +110,11 @@ export const ClientUpdate = () => {
   }
 
   const onApellidoBlur = ({target})=>{
-    if (validations.validarTamaño(target.value)){
+    if (!validations.validarTamaño(target.value)){
       error[1] = 0;
       return
     }
-    if (validations.validarTexto(target.value)){
+    if (!validations.validarTexto(target.value)){
       error[1] = 0;
       return
     }
@@ -121,11 +122,11 @@ export const ClientUpdate = () => {
   }
 
   const onDireccionBlur = ({target})=>{
-    if (validations.validarTamaño(target.value)){
+    if (!validations.validarTamaño(target.value)){
       error[2] = 0;
       return
     }
-    if (validations.validarTexto(target.value)){
+    if (!validations.validarTexto(target.value)){
       error[2] = 0;
       return
     }
@@ -133,7 +134,7 @@ export const ClientUpdate = () => {
   }
 
   const onEmailBlur = ({target})=>{
-    if (validations.validarEmail(target.value)){
+    if (!validations.validarEmail(target.value)){
       error[3] = 0;
       return
     }
@@ -141,15 +142,12 @@ export const ClientUpdate = () => {
   }
 
   const onPasswordBlur = ({target})=>{
-    if (validations.validarPassword(target.value)){
+    if (!validations.validarPassword(target.value)){
       error[4]=0;
       return
     }
   }
 
-  const onVPasswordBlur = ({target})=>{
-    validations.validarPassword(target.value)
-  }
 
   const onSubmit = (event) => {
     event.preventDefault();
@@ -168,9 +166,9 @@ export const ClientUpdate = () => {
       password: password == "" ? clientes[0].password : password,
       habilitado,
     })
-    dispatch(updateCliente(clientData));
-    setTitulo('Cliente actualizado exitosamente')
-    setOpenAlert(true)
+    dispatch(updateCliente(cliente));
+    setTitulo('¿Desea editar al cliente?')
+    setOpenYesNo(true)
   };
 
   return (
@@ -249,7 +247,6 @@ export const ClientUpdate = () => {
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
-              required={true}
               label="Contraseña"
               type="password"
               placeholder="Contraseña"
@@ -263,13 +260,11 @@ export const ClientUpdate = () => {
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
-              required={true}
               label="Repetir Contraseña"
               type="password"
               placeholder="Repetir Contraseña"
               value={vPassword}
               onChange={onVPasswordChange}
-              onBlur={onVPasswordBlur}
               error={false}
               helperText=""
               fullWidth
@@ -303,8 +298,8 @@ export const ClientUpdate = () => {
           </Grid>
         </Grid>
       </form>
-      {open?<ModalYesNo functionToDispatch={updateCliente} dataDispatch={cliente} titulo={titulo} open={openYesNo} setOpen={setOpenYesNo} setOpenAlert={setOpenAlert}/>:null}
-      {open?<ModalAlert titulo={titulo} open={openAlert} setOpen={setOpenAlert}/>:null}
+      {openYesNo?<ModalYesNo functionToDispatch={updateCliente} dataDispatch={cliente} titulo={titulo} open={openYesNo} setOpen={setOpenYesNo} setOpenAlert={setOpenAlert}/>:null}
+      {openAlert?<ModalAlert open={openAlert} setOpen={setOpenAlert}/>:null}
     </MainLayout>
   );
 };

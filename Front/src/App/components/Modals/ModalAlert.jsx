@@ -5,7 +5,7 @@ import Typography from "@mui/joy/Typography";
 import Stack from "@mui/system/Stack";
 
 
-export const ModalAlert = ({ titulo, open, setOpen }) => {
+export const ModalAlert = ({ open, setOpen }) => {
 
     const onButtonSiClick= ()=>{
         setOpen(false)
@@ -37,7 +37,7 @@ export const ModalAlert = ({ titulo, open, setOpen }) => {
           fontWeight="lg"
           mb={1}
         >
-          {titulo}
+          {"Operacion Exitosa"}
         </Typography>
         <Stack 
           direction="row" spacing={2} 

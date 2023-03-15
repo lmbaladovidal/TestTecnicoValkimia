@@ -4,8 +4,8 @@ import Button from "@mui/joy/Button";
 import Typography from "@mui/joy/Typography";
 import Stack from "@mui/system/Stack";
 import { useDispatch } from "react-redux";
-import { useForm } from "../../hooks";
-import { createFactura } from "../../store/Bills/thunks";
+import { useForm } from "../../../hooks";
+import { createFactura } from "../../../store/Bills/thunks";
 
 
 export const ModalAddBill = ({ dataFactura, open, setOpen, setOpenAlert }) => {

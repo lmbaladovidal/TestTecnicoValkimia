@@ -20,8 +20,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import { Divider, List, ListItem } from "@mui/joy";
 import Inventory2Icon from '@mui/icons-material/Inventory2';
-import { ModalAddBill } from "./ModalAddBill";
-import { ModalAlert} from "./ModalAlert";
+import { ModalAddBill } from "./Modals/ModalAddBill";
+import { ModalAlert} from "./Modals/ModalAlert";
 
 
 export const AddBill = () => {
@@ -61,13 +61,14 @@ export const AddBill = () => {
     setFecha(fecha)
   };
 
-const agregarDetalle = ({target})=>{
-  if (validations.validarTamaño(target.value,2)){
-    target.error = true
+const agregarDetalle = (event)=>{
+  if (!validations.validarTamaño(event.target.value,2)){
+    event.target.error = true
     return
   }
   if (event.keyCode === 13) {
-      setDetalleProductos([...detalleProductos, target.value])
+      console.log("paso");
+      setDetalleProductos([...detalleProductos, event.target.value])
       cleanInput(event)
     }
 }
@@ -80,12 +81,20 @@ const formatearTextoDetalle = ()=>{
 }
 
   const onFechaBlur = ({ target }) => {
-    if (validations.validarFecha(fecha)) {
+    if (!validations.validarFecha(fecha)) {
       error[0] = 1
       return true
     }
     error[0] = 0
     return false
+  }
+
+  const onDetalleBlur = (event)=>{
+    if (!validations.validarTamaño(event.target.value,2)){
+      event.target.error = true
+      return
+    }
+      cleanInput(event)
   }
 
   const onImporteBlur = ({ target }) => {
@@ -123,8 +132,8 @@ const onSubmit=(e)=>{
         <Grid container>
           <FormControl fullWidth sx={{textAlign:"left"}}>
             <InputLabel id="demo-simple-select-label">Cliente</InputLabel>
-            <Select name={"cliente"} value={cliente} onChange={handleChange} helperText="Campor Requerido" required={true}>
-                {clientes.map((cliente)=>(<MenuItem key={cliente.id} value={cliente.id}>{cliente.nombre+" "+cliente.apellido}</MenuItem>))}
+            <Select name={"cliente"} value={cliente} onChange={handleChange} helpertext="Campor Requerido" required={true}>
+                {clientes && clientes.map((cliente)=>(<MenuItem key={cliente.id} value={cliente.id}>{cliente.nombre+" "+cliente.apellido}</MenuItem>))}
               </Select>
           </FormControl>
           <Grid item xs={12} sx={{ mt: 2 }}>
@@ -161,7 +170,7 @@ const onSubmit=(e)=>{
               type="text"
               placeholder="importe"
               error={false}
-              helperText=""
+              helpertext=""
               required={true}
               fullWidth
             />
@@ -194,7 +203,7 @@ const onSubmit=(e)=>{
           Cargar Factura           
         </Button>
         {open?<ModalAddBill dataFactura={dataFactura} open={open} setOpen={setOpen} setOpenAlert={setOpenAlert}/>:null}
-        {opne?<ModalAlert titulo={titulo} open={openAlert} setOpen={setOpenAlert}/>:null}
+        {openAlert?<ModalAlert open={openAlert} setOpen={setOpenAlert}/>:null}
       </Stack>
     </MainLayout>
   )

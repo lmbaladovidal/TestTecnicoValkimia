@@ -18,7 +18,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import Autocomplete from "@mui/material/Autocomplete";
 import { Stack } from "@mui/system";
-import { ModalAlert } from "../components/ModalError";
+import { ModalAlert } from "../components/Modals/ModalAlert"
 import { ModalYesNo } from "../components/Modals/ModalYesNo";
 
 
@@ -35,7 +35,7 @@ export const ClientsRegisterPage = () => {
   }
   const dispatch = useDispatch();
   const {ciudades} = useSelector((state) => state.cities);
-  const { nombre,apellido,domicilio,email,password,vPassword, onInputChange, formState } = useForm(initialState);
+  const { nombre,apellido,domicilio,email,password,vPassword, onInputChange } = useForm(initialState);
   const [cliente, setCliente] = useState({})
   const [ciudad, setCiudad] = useState('')
   const [titulo, setTitulo] = useState('')
@@ -55,55 +55,67 @@ export const ClientsRegisterPage = () => {
 
   
   const onNombreBlur = ({target})=>{
-    if (validations.validarTamaño(target.value)){
+    console.log(target);
+    if (!validations.validarTamaño(target.value,2)){
       error[0] = 0;
+      console.log("paso");
+      target.prototype("error")
+      target.helpertext="Nombre demasiado corto"
       return
     }
-    if (validations.validarTexto(target.value)){
+    if (!validations.validarTexto(target.value)){
       error[0] = 0;
+      target.error = true 
       return
     }
     error[0]=1
   }
   const onApellidoBlur = ({target})=>{
-    if (validations.validarTamaño(target.value)){
+    if (!validations.validarTamaño(target.value)){
       error[1] = 0;
+      target.error = true
       return
     }
-    if (validations.validarTexto(target.value)){
+    if (!validations.validarTexto(target.value)){
       error[1] = 0;
+      target.error = true
       return
     }
     error[1]=1    
   }
   const onDomicilioBlur = ({target})=>{
-    if (validations.validarTamaño(target.value)){
+    if (!validations.validarTamaño(target.value)){
       error[2] = 0;
+      target.error = true
       return
     }
-    if (validations.validarTexto(target.value)){
+    if (!validations.validarTexto(target.value)){
       error[2] = 0;
+      target.error = true
       return
     }
     error[2]=1
   }
   const onEmailBlur = ({target})=>{
-    if (validations.validarEmail(target.value)){
+    if (!validations.validarEmail(target.value)){
       error[3] = 0;
+      target.error = true
       return
     }
     error[3] = 1
   }
   const onPasswordBlur = ({target})=>{
-    if (validations.validarPassword(target.value)){
+    if (!validations.validarPassword(target.value)){
       error[4]=0;
+      target.error = true
       return
     }
   }
 
   const onVPasswordChange=({target})=>{
     onInputChange({target})
-    console.log(`${password}==${vpassword}`,password==vPassword)
+    console.log(target.value);
+    target.error = password==target.value
   }
 
 
@@ -123,13 +135,14 @@ export const ClientsRegisterPage = () => {
         password,
         habilitado:true
       })
-      setTitulo("Cliente registrado exitosamente")
+      setOpenYesNo(true)
+      setTitulo("¿Desea Registrar al cliente?")
     }
 
   return (
     <MainLayout title="Registrar Cliente">
-      <Grid container>
         <h1>Registrar Cliente</h1>
+        <Grid container>
         <form onSubmit={onSubmit}>
           <Grid container>
             <Grid item xs={12} sx={{ mt: 2 }}>
@@ -143,7 +156,7 @@ export const ClientsRegisterPage = () => {
                 type="text"
                 placeholder="John"
                 error={false}
-                helperText=""
+                helpertext=""
                 fullWidth
               />
             </Grid>
@@ -158,7 +171,7 @@ export const ClientsRegisterPage = () => {
                 type="text"
                 placeholder="Doe"
                 error={false}
-                helperText=""
+                helpertext=""
                 fullWidth
               />
             </Grid>
@@ -173,14 +186,14 @@ export const ClientsRegisterPage = () => {
                 type="text"
                 placeholder="Calle 1 Nro 1"
                 error={false}
-                helperText=""
+                helpertext=""
                 fullWidth
               />
             </Grid>
             <Grid item xs={12} sx={{ mt: 2 }}>
             <FormControl fullWidth sx={{textAlign:"left"}}>
               <InputLabel id="demo-simple-select-label">Ciudad</InputLabel>
-              <Select name={"ciudad"} value={ciudad} onChange={handleChange} error={false} helperText="Campo Requerido" required={true}>
+              <Select name={"ciudad"} value={ciudad} onChange={handleChange} required={true} >
                   {ciudades.map((ciudad)=>(<MenuItem key={ciudad.id} value={ciudad.id}>{ciudad.label}</MenuItem>))}
                 </Select>
             </FormControl>
@@ -196,7 +209,7 @@ export const ClientsRegisterPage = () => {
                 type="email"
                 placeholder="Correo@google.com"
                 error={false}
-                helperText=""
+                helpertext=""
                 fullWidth
               />
             </Grid>
@@ -211,7 +224,7 @@ export const ClientsRegisterPage = () => {
                 type="password"
                 placeholder="Contraseña"
                 error={false}
-                helperText=""
+                helpertext=""
                 fullWidth
               />
             </Grid>
@@ -225,7 +238,7 @@ export const ClientsRegisterPage = () => {
                 type="password"
                 placeholder="Contraseña"
                 error={false}
-                helperText=""
+                helpertext=""
                 fullWidth
               />
             </Grid>
@@ -249,8 +262,8 @@ export const ClientsRegisterPage = () => {
             </Grid>
           </Grid>
         </form>
-        {open?<ModalYesNo functionToDispatch={createCliente} dataDispatch={cliente} titulo={titulo} open={openYesNo} setOpen={setOpenYesNo} setOpenAlert={setOpenAlert}/>:null}
-        {open?<ModalAlert titulo={titulo} open={openAlert} setOpen={setOpenAlert}/>:null}
+        {openYesNo?<ModalYesNo functionToDispatch={createCliente} dataDispatch={cliente} titulo={titulo} open={openYesNo} setOpen={setOpenYesNo} setOpenAlert={setOpenAlert}/>:null}
+        {openAlert?<ModalAlert open={openAlert} setOpen={setOpenAlert}/>:null}
       </Grid>
     </MainLayout>
   );
