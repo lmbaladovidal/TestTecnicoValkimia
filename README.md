@@ -11,3 +11,6 @@ Se trata de una aplicación pequeña la cual consta de un ABM de clientes y dond
 - [x] Ejecutar ambos proyectos paralelamente con el comando **npm run dev**
 
 Luego de tener instalas las dependecias, los dos proyectos corriendo en paralelo y la base de datos configurada correctamente la aplicación deberia poder ejecutarse correctamente desde cualquier navegador actual
+
+opcionalmente utilizando postman puede hacerce una carga de dataDummy
+La unica consideracion que debe tener en cuenta es el orden, primero ciudades, luego clientes y luego facturas. Las id's para hacer las asociaciones debe ingresarse manualmente de momento.
