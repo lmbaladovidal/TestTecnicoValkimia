@@ -4,8 +4,6 @@ import Modal from "@mui/material/Modal";
 import Button from "@mui/joy/Button";
 import Typography from "@mui/joy/Typography";
 import Stack from "@mui/system/Stack";
-import { useDispatch } from "react-redux";
-import { deleteCliente, getClientes } from "../../store/Clients/thunks";
 
 export const ModalDelete = ({ titulo, open, setOpen }) => {
 

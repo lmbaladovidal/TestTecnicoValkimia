@@ -62,6 +62,10 @@ export const AddBill = () => {
   };
 
 const agregarDetalle = ({target})=>{
+  if (validations.validarTamaño(target.value,2)){
+    target.error = true
+    return
+  }
   if (event.keyCode === 13) {
       setDetalleProductos([...detalleProductos, target.value])
       cleanInput(event)
@@ -110,7 +114,7 @@ const onSubmit=(e)=>{
     detalle:formatearTextoDetalle()
   })
   setTitulo('Factura grabada con éxito')
-  setOpenAlert(true)
+  setOpen(true)
 }
 
   return (
@@ -119,17 +123,18 @@ const onSubmit=(e)=>{
         <Grid container>
           <FormControl fullWidth sx={{textAlign:"left"}}>
             <InputLabel id="demo-simple-select-label">Cliente</InputLabel>
-            <Select name={"cliente"} value={cliente} onChange={handleChange}>
+            <Select name={"cliente"} value={cliente} onChange={handleChange} helperText="Campor Requerido" required={true}>
                 {clientes.map((cliente)=>(<MenuItem key={cliente.id} value={cliente.id}>{cliente.nombre+" "+cliente.apellido}</MenuItem>))}
               </Select>
           </FormControl>
           <Grid item xs={12} sx={{ mt: 2 }}>
           <LocalizationProvider dateAdapter={AdapterLuxon} >
             <DateTimePicker 
-                //value={fecha}
+                required={true}
                 onChange={handleFechaChange}
                 onBlur={onFechaBlur} label="Fecha de factura"
-                item xs={12} sx={{ mt: 2, width:"100%" }}
+                item xs={12} sx={{ mt: 2, width:"100%" }
+                }
                  />
           </LocalizationProvider>
           </Grid>
@@ -152,9 +157,12 @@ const onSubmit=(e)=>{
               value={importe}
               onChange={onInputChange}
               onBlur={onImporteBlur}
-              label="importe"
+              label="Importe"
               type="text"
-              placeholder="Calle 1 Nro 1"
+              placeholder="importe"
+              error={false}
+              helperText=""
+              required={true}
               fullWidth
             />
           </Grid>
@@ -185,7 +193,7 @@ const onSubmit=(e)=>{
         <Button variant="contained" onClick={onSubmit} endIcon={< SaveAltIcon/>}>
           Cargar Factura           
         </Button>
-        {open?<ModalAddBill dataFactura={dataFactura} open={open} setOpen={setOpen}/>:null}
+        {open?<ModalAddBill dataFactura={dataFactura} open={open} setOpen={setOpen} setOpenAlert={setOpenAlert}/>:null}
         {opne?<ModalAlert titulo={titulo} open={openAlert} setOpen={setOpenAlert}/>:null}
       </Stack>
     </MainLayout>

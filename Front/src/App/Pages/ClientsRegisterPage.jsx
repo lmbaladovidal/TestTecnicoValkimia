@@ -18,7 +18,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import Autocomplete from "@mui/material/Autocomplete";
 import { Stack } from "@mui/system";
-import { ModalAlert } from "../components/ModalAlert";
+import { ModalAlert } from "../components/ModalError";
+import { ModalYesNo } from "../components/Modals/ModalYesNo";
 
 
 
@@ -35,9 +36,11 @@ export const ClientsRegisterPage = () => {
   const dispatch = useDispatch();
   const {ciudades} = useSelector((state) => state.cities);
   const { nombre,apellido,domicilio,email,password,vPassword, onInputChange, formState } = useForm(initialState);
+  const [cliente, setCliente] = useState({})
   const [ciudad, setCiudad] = useState('')
   const [titulo, setTitulo] = useState('')
-  const [open, setOpen] = useState(false)
+  const [openAlert, setOpenAlert] = useState(false)
+  const [openYesNo, setOpenYesNo] = useState(false)
 
   let error = [0,0,0,0,0]
 
@@ -111,7 +114,7 @@ export const ClientsRegisterPage = () => {
           setOpenAlert(true)
           return
       }
-      const clientData = { 
+      setCliente({ 
         nombre,
         apellido,
         domicilio,
@@ -119,8 +122,7 @@ export const ClientsRegisterPage = () => {
         email,
         password,
         habilitado:true
-      }
-      dispatch(createCliente(clientData))
+      })
       setTitulo("Cliente registrado exitosamente")
     }
 
@@ -247,7 +249,8 @@ export const ClientsRegisterPage = () => {
             </Grid>
           </Grid>
         </form>
-        {opne?<ModalAlert titulo={titulo} open={open} setOpen={setOpen}/>:null}
+        {open?<ModalYesNo functionToDispatch={createCliente} dataDispatch={cliente} titulo={titulo} open={openYesNo} setOpen={setOpenYesNo} setOpenAlert={setOpenAlert}/>:null}
+        {open?<ModalAlert titulo={titulo} open={openAlert} setOpen={setOpenAlert}/>:null}
       </Grid>
     </MainLayout>
   );

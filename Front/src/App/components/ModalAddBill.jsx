@@ -8,7 +8,7 @@ import { useForm } from "../../hooks";
 import { createFactura } from "../../store/Bills/thunks";
 
 
-export const ModalAddBill = ({ dataFactura, open, setOpen }) => {
+export const ModalAddBill = ({ dataFactura, open, setOpen, setOpenAlert }) => {
 
     const dispatch = useDispatch();
 
@@ -18,6 +18,7 @@ export const ModalAddBill = ({ dataFactura, open, setOpen }) => {
 
     const onButtonSiClick= ()=>{
         dispatch(createFactura(dataFactura))
+        setOpenAlert(true)
         setOpen(false)
     }
   return (

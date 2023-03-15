@@ -17,12 +17,15 @@ import Checkbox from "@mui/material/Checkbox";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from '@mui/icons-material/Edit';
 import { Stack } from "@mui/system";
-import { ModalAlert } from "../components/ModalAlert";
+import { ModalAlert } from "../components/ModalError";
+import { ModalYesNo } from "../components/Modals/ModalYesNo";
 
 export const ClientUpdate = () => {
+  
   const { idCliente } = useParams();
   const { clientes, isLoading } = useSelector((state) => state.client);
   const { ciudades, isLoadingCities } = useSelector((state) => state.cities);
+  const [cliente, setCliente] = useState({})
   const dispatch = useDispatch();
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
@@ -32,6 +35,8 @@ export const ClientUpdate = () => {
   const [habilitado, setHabilitado] = useState(false);
   const [password, setPassword] = useState("");
   const [vPassword, setVPassword] = useState("");
+  const [openAlert, setOpenAlert] = useState(false)
+  const [openYesNo, setOpenYesNo] = useState(false)
 
   useEffect(() => {
     dispatch(getCliente(idCliente));
@@ -146,8 +151,6 @@ export const ClientUpdate = () => {
     validations.validarPassword(target.value)
   }
 
-
-
   const onSubmit = (event) => {
     event.preventDefault();
     if (error.find(element => element == 0)){
@@ -155,7 +158,7 @@ export const ClientUpdate = () => {
       setOpenAlert(true)
       return
     }
-    const clientData = {
+    setCliente({
       id: idCliente,
       nombre,
       apellido,
@@ -164,7 +167,7 @@ export const ClientUpdate = () => {
       email,
       password: password == "" ? clientes[0].password : password,
       habilitado,
-    };
+    })
     dispatch(updateCliente(clientData));
     setTitulo('Cliente actualizado exitosamente')
     setOpenAlert(true)
@@ -300,7 +303,8 @@ export const ClientUpdate = () => {
           </Grid>
         </Grid>
       </form>
-      {opne?<ModalAlert titulo={titulo} open={openAlert} setOpen={setOpenAlert}/>:null}
+      {open?<ModalYesNo functionToDispatch={updateCliente} dataDispatch={cliente} titulo={titulo} open={openYesNo} setOpen={setOpenYesNo} setOpenAlert={setOpenAlert}/>:null}
+      {open?<ModalAlert titulo={titulo} open={openAlert} setOpen={setOpenAlert}/>:null}
     </MainLayout>
   );
 };
