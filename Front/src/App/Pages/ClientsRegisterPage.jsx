@@ -41,6 +41,13 @@ export const ClientsRegisterPage = () => {
   const [titulo, setTitulo] = useState('')
   const [openAlert, setOpenAlert] = useState(false)
   const [openYesNo, setOpenYesNo] = useState(false)
+  
+  const [errorName, setErrorName] = useState({error:false,message:''})
+  const [errorApellido, setErrorApellido] = useState({error:false,message:''})
+  const [errorDomicilio, setErrorDomicilio] = useState({error:false,message:''})
+  const [errorEmail, setErrorEmail] = useState({error:false,message:''})
+  const [errorPass, setErrorPass] = useState({error:false,message:''})
+  const [errorVpass, setErrorVpass] = useState({error:false,message:''})
 
   let error = [0,0,0,0,0]
 
@@ -59,7 +66,7 @@ export const ClientsRegisterPage = () => {
     if (!validations.validarTamaño(target.value,2)){
       error[0] = 0;
       console.log("paso");
-      target.prototype("error")
+      setErrorName({error:false,message:''})
       target.helpertext="Nombre demasiado corto"
       return
     }
@@ -69,6 +76,7 @@ export const ClientsRegisterPage = () => {
       return
     }
     error[0]=1
+    setErrorName({error:false,message:''})
   }
   const onApellidoBlur = ({target})=>{
     if (!validations.validarTamaño(target.value)){
@@ -78,44 +86,51 @@ export const ClientsRegisterPage = () => {
     }
     if (!validations.validarTexto(target.value)){
       error[1] = 0;
-      target.error = true
+      setErrorApellido({error:false,message:''})
       return
     }
     error[1]=1    
+    setErrorApellido({error:false,message:''})
   }
   const onDomicilioBlur = ({target})=>{
     if (!validations.validarTamaño(target.value)){
       error[2] = 0;
-      target.error = true
+      setErrorDomicilio({error:false,message:''})
       return
     }
     if (!validations.validarTexto(target.value)){
       error[2] = 0;
-      target.error = true
+      setErrorDomicilio({error:false,message:''})
       return
     }
     error[2]=1
+    setErrorDomicilio({error:false,message:''})
   }
   const onEmailBlur = ({target})=>{
     if (!validations.validarEmail(target.value)){
       error[3] = 0;
-      target.error = true
+      setErrorEmail({error:false,message:''})
       return
     }
     error[3] = 1
+    setErrorEmail({error:false,message:''})
   }
   const onPasswordBlur = ({target})=>{
     if (!validations.validarPassword(target.value)){
       error[4]=0;
-      target.error = true
+      setErrorPass({error:false,message:''})
       return
     }
+    setErrorPass({error:false,message:''})
   }
 
   const onVPasswordChange=({target})=>{
     onInputChange({target})
     console.log(target.value);
-    target.error = password==target.value
+    if (!password==target.value){
+      setErrorVpass({error:false,message:''})
+    }
+    setErrorVpass({error:false,message:''})
   }
 
 
@@ -155,8 +170,8 @@ export const ClientsRegisterPage = () => {
                 onBlur={onNombreBlur}
                 type="text"
                 placeholder="John"
-                error={false}
-                helpertext=""
+                helperText={errorName.message}
+                error={errorName.error}
                 fullWidth
               />
             </Grid>
@@ -170,8 +185,8 @@ export const ClientsRegisterPage = () => {
                 label="Apellido"
                 type="text"
                 placeholder="Doe"
-                error={false}
-                helpertext=""
+                helperText={errorApellido.message}
+                error={errorApellido.error}
                 fullWidth
               />
             </Grid>
@@ -185,8 +200,8 @@ export const ClientsRegisterPage = () => {
                 label="Dirección"
                 type="text"
                 placeholder="Calle 1 Nro 1"
-                error={false}
-                helpertext=""
+                error={errorDomicilio.error}
+                helperText={errorDomicilio.message}
                 fullWidth
               />
             </Grid>
@@ -208,8 +223,8 @@ export const ClientsRegisterPage = () => {
                 label="Correo"
                 type="email"
                 placeholder="Correo@google.com"
-                error={false}
-                helpertext=""
+                error={errorEmail.error}
+                helperText={errorEmail.message}
                 fullWidth
               />
             </Grid>
@@ -223,8 +238,8 @@ export const ClientsRegisterPage = () => {
                 label="Contraseña"
                 type="password"
                 placeholder="Contraseña"
-                error={false}
-                helpertext=""
+                error={errorPass.apellido}
+                helperText={errorPass.message}
                 fullWidth
               />
             </Grid>
@@ -237,8 +252,8 @@ export const ClientsRegisterPage = () => {
                 label="Contraseña"
                 type="password"
                 placeholder="Contraseña"
-                error={false}
-                helpertext=""
+                error={errorVpass.error}
+                helperText={errorVpass.message}
                 fullWidth
               />
             </Grid>
