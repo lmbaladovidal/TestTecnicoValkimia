@@ -17,7 +17,10 @@ const createDummyCiudad = (req, res) => {
       status: 200,
     });
   } catch (error) {
-    res.json(error);
+    res.json({
+      data: error,
+      status: 500,
+    });
   }
 };
 
@@ -28,7 +31,10 @@ const getCiudades = async (req,res)=>{
       result: { status: 200, ciudades},
     });
   } catch (error) {
-    res.json({ error });
+    res.json({
+      data: error,
+      status: 500,
+    });
   }  
 }
 

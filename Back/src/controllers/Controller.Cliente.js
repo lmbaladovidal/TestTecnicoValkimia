@@ -25,14 +25,17 @@ const createDummyCliente = async (req, res) => {
       });
     });
   } catch (error) {
-    res.json(error);
+    res.json({
+      data: error,
+      status: 500,
+    });
   }
 };
 //INICIO ABM CLIENTES
 const createCliente = (req, res) => {
   console.log(req.body);
   const checksum = validateCliente.validar(req.body);
-  console.log("Check sum",checksum);
+  console.log("Check sum", checksum);
   if (checksum !== 8) {
     res.json({
       data: {
@@ -83,14 +86,17 @@ const deleteCliente = async (req, res) => {
       });
     }
   } catch (error) {
-    res.json({ error });
+    res.json({
+      data: error,
+      status: 500,
+    });
   }
 };
 
 const updateCliente = async (req, res) => {
   try {
     const checksum = validateCliente.validar(req.body);
-    console.log("Actualizar Clientes",req.body,checksum);
+    console.log("Actualizar Clientes", req.body, checksum);
     if (checksum !== 8) {
       res.json({
         data: {
@@ -127,7 +133,10 @@ const updateCliente = async (req, res) => {
       });
     }
   } catch (error) {
-    res.json({ data:{error} });
+    res.json({
+      data: error,
+      status: 500,
+    });
   }
 };
 
@@ -145,7 +154,10 @@ const listClientes = async (req, res) => {
       result: { status: 200, clientes, page: req.params.page, amount },
     });
   } catch (error) {
-    res.json({ error });
+    res.json({
+      data: error,
+      status: 500,
+    });
   }
 };
 
@@ -158,7 +170,10 @@ const listAllClientes = async (req, res) => {
       result: { status: 200, clientes, page: req.params.page, amount },
     });
   } catch (error) {
-    res.json({ error });
+    res.json({
+      data: error,
+      status: 500,
+    });
   }
 };
 
@@ -181,7 +196,10 @@ const listCliente = async (req, res) => {
     });
     res.json({ result: { status: 200, cliente } });
   } catch (error) {
-    res.json({ error });
+    res.json({
+      data: error,
+      status: 500,
+    });
   }
 };
 

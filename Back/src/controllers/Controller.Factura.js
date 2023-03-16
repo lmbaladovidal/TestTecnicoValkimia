@@ -21,7 +21,10 @@ const createDummyFactura = (req, res) => {
       status: 200,
     });
   } catch (error) {
-    res.json(error);
+    res.json({
+      data: error,
+      status: 500,
+    });
   }
 };
 
