@@ -53,6 +53,7 @@ export const AddBill = () => {
   const [dataFactura, setDataFactura] = useState({})
   const [openYesNo, setOpenYesNo] = useState(false)
   const [titulo, setTitulo] = useState('')
+  const [tipo, setTipo] = useState(0)
 
 
   const [errorCliente, setErrorCliente] = useState({ error: false, message: '' })
@@ -68,9 +69,10 @@ export const AddBill = () => {
 
 
   const resetForm = () => {
-    
+
     setDetalleProductos([])
     onResetForm()
+
   }
 
 
@@ -78,6 +80,10 @@ export const AddBill = () => {
     if (!validations.validarTamaño(event.target.value, 2)) {
       event.target.error = true
       return
+    }
+    if(detalleProductos.length==0){
+      setErrorDetalle({ error: false, message: "" })
+      setErrors({ ...errors, detalle: true })
     }
     if (event.keyCode === 13) {
       setDetalleProductos([...detalleProductos, event.target.value])
@@ -147,12 +153,13 @@ export const AddBill = () => {
 
   const validarItemsEnDetalle = () => {
     if (detalleProductos.length == 0) {
-      setErrors({ ...errors, importe: false })
+      setErrors({ ...errors, detalle: false })
       setErrorDetalle({ error: true, message: "debe haber al menos un item cargado" })
-      return
+      return false
     }
     setErrorDetalle({ error: false, message: "" })
     setErrors({ ...errors, detalle: true })
+    return true
   }
 
 
@@ -160,30 +167,44 @@ export const AddBill = () => {
     if (cliente == '') {
       setErrorCliente({ error: true, message: 'Debe seleccionar un cliente' })
       setErrors({ ...errors, cliente: false })
+      return false
     }
+    return true
   }
-
+  const validarErrores = () => {
+    if (!validarItemsEnDetalle()) return false;
+    if (!validarCliente()) return false;
+    const valores = Object.values(errors);
+    for (let i = 0; i < valores.length; i++) {
+      console.log(i,valores);
+      if (!valores[i]) {
+        return false
+      }
+    };
+    return true
+  }
 
   const onSubmit = (e) => {
     e.preventDefault();
-    validarItemsEnDetalle();
-    validarCliente();
-    const valores = Object.values(errors);
-    for (let i = 0; i < valores.length; i++) {
-      if (!valores[i]) {
-        setTituloAlert('Error en los campos')
-        setOpenAlert(true)
-        return
-      }
-    };
+    console.log(validarErrores());
+    console.log(errors);
+    if (!validarErrores()) {
+      setTituloAlert('Error en el formulario')
+      setOpenAlert(true)
+      setTipo(0);
+      return
+    }
+    console.log(errors);
     setDataFactura({
       idCliente: cliente,
       fecha,
       importe,
       detalle: formatearTextoDetalle()
     })
+    console.log(dataFactura);
     setTitulo('¿Desea Grabar la factura?')
     setTituloAlert('Exito en la carga')
+    setTipo(1);
     setOpenYesNo(true)
   }
 
@@ -233,7 +254,7 @@ export const AddBill = () => {
               onBlur={onImporteBlur}
               label="Importe"
               type="text"
-              placeholder="importe"
+              placeholder="100.00"
               error={errorImporte.error}
               helperText={errorImporte.message}
               required={true}
@@ -268,7 +289,7 @@ export const AddBill = () => {
           Cargar Factura
         </Button>
         {openYesNo ? <ModalYesNo functionToDispatch={createFactura} dataDispatch={dataFactura} titulo={titulo} open={openYesNo} setOpen={setOpenYesNo} setOpenAlert={setOpenAlert} /> : null}
-        {openAlert ? <ModalAlert title={tituloAlert} open={openAlert} setOpen={setOpenAlert} resetForm={resetForm} /> : null}
+        {openAlert ? <ModalAlert title={{ titulo: tituloAlert, tipo }} open={openAlert} setOpen={setOpenAlert} resetForm={resetForm} /> : null}
       </Stack>
     </MainLayout>
   )

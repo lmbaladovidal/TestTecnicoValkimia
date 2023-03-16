@@ -64,6 +64,5 @@ export const updateCliente = (data)=>{
               'Content-Type': 'application/x-www-form-urlencoded'
             }
         })
-        dispatch(getClientes())
     }
 }

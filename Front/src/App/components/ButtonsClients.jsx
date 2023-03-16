@@ -17,7 +17,7 @@ export const ButtonsClients = ({ cliente }) => {
   return (
     <Stack direction="row" spacing={2}>
       <Button variant="outlined" onClick={() => setOpenModalBills(true)} startIcon={< ReceiptIcon />}>
-        Ver Facuturas
+        Ver Facturas
       </Button>
       {openModalBills ? <BillsList cliente={cliente} open={openModalBills} setOpen={setOpenModalBills} /> : null}
       <Button variant="outlined" startIcon={< EditIcon />} >
@@ -29,12 +29,12 @@ export const ButtonsClients = ({ cliente }) => {
       {openYesNo ? <ModalYesNo
         functionToDispatch={deleteCliente}
         dataDispatch={cliente.id}
-        titulo={`¿Seguro que desea elminar a ${cliente.nombre} ${cliente.apellido}?`}
+        titulo={`¿Seguro que desea elminar a ${cliente.nombre}?`}
         open={openYesNo}
         setOpen={setOpenYesNo}
         setOpenAlert={setOpenModalAlert} /> : null
       }
-      {openModalAlert ? <ModalAlert cliente={cliente} open={openModalAlert} setOpen={setOpenModalAlert} /> : null}
+      {openModalAlert ? <ModalAlert title={{titulo:"Operacion Exitosa",tipo:0}} cliente={cliente} open={openModalAlert} setOpen={setOpenModalAlert} /> : null}
     </Stack>
   )
 }

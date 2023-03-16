@@ -24,36 +24,36 @@ export const ModalYesNo = ({ functionToDispatch, dataDispatch, titulo, open, set
             onClose={() => setOpen(false)}
             sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
         >
-            <Sheet
-                variant="outlined"
-                sx={{
-                    maxWidth: 500,
-                    borderRadius: "md",
-                    p: 3,
-                    boxShadow: "lg",
-                }}
+        <Sheet
+            variant="outlined"
+            sx={{
+                maxWidth: 500,
+                borderRadius: "md",
+                p: 3,
+                boxShadow: "lg",
+            }}
+        >
+            <Typography
+                textAlign={"center"}
+                component="h2"
+                id="modal-title"
+                level="h4"
+                textcolor="inherit"
+                fontWeight="lg"
+                mb={1}
             >
-                <Typography
-                    textAlign={"center"}
-                    component="h2"
-                    id="modal-title"
-                    level="h4"
-                    textcolor="inherit"
-                    fontWeight="lg"
-                    mb={1}
-                >
-                    {titulo}
-                </Typography>
-                <Stack
-                    direction="row" spacing={2}
-                    alignItems='center'
-                    justifyContent='center'
-                    mt={5}
-                >
-                    <Button onClick={onButtonSiClick}>Si</Button>
-                    <Button onClick={onButtonNoClick}>No</Button>
-                </Stack>
-            </Sheet>
+                {titulo}
+            </Typography>
+            <Stack
+                direction="row" spacing={2}
+                alignItems='center'
+                justifyContent='center'
+                mt={5}
+            >
+                <Button onClick={onButtonSiClick}>Si</Button>
+                <Button onClick={onButtonNoClick}>No</Button>
+            </Stack>
+        </Sheet>
         </Modal>
     )
 }

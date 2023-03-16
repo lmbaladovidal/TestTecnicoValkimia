@@ -12,7 +12,10 @@ export const ModalAlert = ({ title, open, setOpen, resetForm, goToHome = false }
 
   const onButtonSiClick = () => {
     setOpen(false)
-    goToHome ? navigate("/") : resetForm()
+    console.log(title.tipo);
+    if(title.tipo!=0){
+      goToHome ? navigate("/") : resetForm()
+    }
   }
 
   return (
@@ -41,7 +44,7 @@ export const ModalAlert = ({ title, open, setOpen, resetForm, goToHome = false }
           fontWeight="lg"
           mb={1}
         >
-          {title}
+          {title.titulo}
         </Typography>
         <Stack
           direction="row" spacing={2}

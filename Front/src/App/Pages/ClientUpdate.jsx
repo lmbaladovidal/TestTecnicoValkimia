@@ -20,6 +20,7 @@ import { Stack } from "@mui/system";
 import { ModalAlert } from "../components/Modals/ModalAlert"
 import { ModalYesNo } from "../components/Modals/ModalYesNo";
 import { validations } from "../../helpers";
+import { Box } from "@mui/material";
 
 export const ClientUpdate = () => {
 
@@ -52,6 +53,7 @@ export const ClientUpdate = () => {
   const [titulo, setTitulo] = useState('')
   const [tituloAlert, setTituloAlert] = useState('')
   const [goToHome, setGoToHome] = useState(false)
+  const [tipo, setTipo] = useState(0)
 
   useEffect(() => {
     dispatch(getCliente(idCliente));
@@ -199,6 +201,7 @@ export const ClientUpdate = () => {
     for (let i = 0; i < valores.length; i++) {
       if (!valores[i]) {
         setTituloAlert('Error en los campos')
+        setTipo(0)
         setGoToHome(false)
         setOpenAlert(true)
         return
@@ -214,8 +217,8 @@ export const ClientUpdate = () => {
       password: password == "" ? clientes[0].password : password,
       habilitado,
     })
-    dispatch(updateCliente(cliente));
     setGoToHome(true)
+    setTipo(1)
     setTituloAlert('Exito en la operacion')
     setTitulo('¿Desea editar al cliente?')
     setOpenYesNo(true)
@@ -223,133 +226,135 @@ export const ClientUpdate = () => {
 
   return (
     <MainLayout>
-      <h1>Editar Cliente</h1>
-      <form onSubmit={onSubmit}>
-        <Grid container>
-          <Grid item xs={12} sx={{ mt: 2 }}>
-            <TextField
-              required={true}
-              label="Nombre"
-              type="text"
-              placeholder="John"
-              value={nombre}
-              onChange={onNombreChange}
-              onBlur={onNombreBlur}
-              error={errorName.error}
-              helperText={errorName.message}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12} sx={{ mt: 2 }}>
-            <TextField
-              required={true}
-              label="Apellido"
-              type="text"
-              placeholder="Doe"
-              value={apellido}
-              onChange={onApellidoChange}
-              onBlur={onApellidoBlur}
-              error={errorApellido.error}
-              helperText={errorApellido.message}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12} sx={{ mt: 2 }}>
-            <TextField
-              required={true}
-              label="Domicilio"
-              type="text"
-              placeholder="Calle 1 Nro 1"
-              value={direccion}
-              onChange={onDomicilioChange}
-              onBlur={onDomicilioBlur}
-              error={errorDomicilio.error}
-              helperText={errorDomicilio.message}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12} sx={{ mt: 2 }}>
-            <FormControl fullWidth sx={{ textAlign: "left" }}>
-              <InputLabel id="demo-simple-select-label">Ciudad</InputLabel>
-              <Select value={ciudad} onChange={handleChange} error={false} helperText="Campo Obligatorio" required={true}>
-                {ciudades &&
-                  ciudades.map((ciudad) => (
-                    <MenuItem key={ciudad.id} value={ciudad.id}>
-                      {ciudad.label}
-                    </MenuItem>
-                  ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sx={{ mt: 2 }}>
-            <TextField
-              required={true}
-              label="Correo"
-              type="email"
-              placeholder="Correo@google.com"
-              value={email}
-              onChange={onEmailChange}
-              onBlur={onEmailBlur}
-              error={errorEmail.error}
-              helperText={errorEmail.message}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12} sx={{ mt: 2 }}>
-            <TextField
-              label="Contraseña"
-              type="password"
-              placeholder="Contraseña"
-              value={password}
-              onChange={onPasswordChange}
-              onBlur={onPasswordBlur}
-              error={errorPass.error}
-              helperText={errorPass.message}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12} sx={{ mt: 2 }}>
-            <TextField
-              label="Repetir Contraseña"
-              type="password"
-              placeholder="Repetir Contraseña"
-              value={vPassword}
-              onChange={onVPasswordChange}
-              error={errorVpass.error}
-              helperText={errorVpass.message}
-              fullWidth
-            />
-          </Grid>
-          <Grid>
-            <FormControlLabel
-              control={
-                <Checkbox onClick={onHabilitadoChange} checked={habilitado} />
-              }
-              label="Habilitado"
-            />
-          </Grid>
-          <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
-            <Grid item xs={12}>
-              <Stack
-                direction="row"
-                spacing={2}
-                alignItems="center"
-                justifyContent="center"
-                mt={5}
-              >
-                <Button variant="outlined" startIcon={<ArrowBackIcon />}>
-                  <Link to={`/`}>Volver</Link>
-                </Button>
-                <Button type="submit" variant="contained" endIcon={<EditIcon />}>
-                  Guardar Cambios
-                </Button>
-              </Stack>
+      <Box sx={{ width: "100%", maxWidth: 760, bgcolor: "background.paper" }}>
+        <h1>Editar Cliente</h1>
+        <form onSubmit={onSubmit}>
+          <Grid container>
+            <Grid item xs={12} sx={{ mt: 2 }}>
+              <TextField
+                required={true}
+                label="Nombre"
+                type="text"
+                placeholder="John"
+                value={nombre}
+                onChange={onNombreChange}
+                onBlur={onNombreBlur}
+                error={errorName.error}
+                helperText={errorName.message}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sx={{ mt: 2 }}>
+              <TextField
+                required={true}
+                label="Apellido"
+                type="text"
+                placeholder="Doe"
+                value={apellido}
+                onChange={onApellidoChange}
+                onBlur={onApellidoBlur}
+                error={errorApellido.error}
+                helperText={errorApellido.message}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sx={{ mt: 2 }}>
+              <TextField
+                required={true}
+                label="Domicilio"
+                type="text"
+                placeholder="Calle 1 Nro 1"
+                value={direccion}
+                onChange={onDomicilioChange}
+                onBlur={onDomicilioBlur}
+                error={errorDomicilio.error}
+                helperText={errorDomicilio.message}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sx={{ mt: 2 }}>
+              <FormControl fullWidth sx={{ textAlign: "left" }}>
+                <InputLabel id="demo-simple-select-label">Ciudad</InputLabel>
+                <Select value={ciudad} onChange={handleChange} error={false} helperText="Campo Obligatorio" required={true}>
+                  {ciudades &&
+                    ciudades.map((ciudad) => (
+                      <MenuItem key={ciudad.id} value={ciudad.id}>
+                        {ciudad.label}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sx={{ mt: 2 }}>
+              <TextField
+                required={true}
+                label="Correo"
+                type="email"
+                placeholder="Correo@google.com"
+                value={email}
+                onChange={onEmailChange}
+                onBlur={onEmailBlur}
+                error={errorEmail.error}
+                helperText={errorEmail.message}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sx={{ mt: 2 }}>
+              <TextField
+                label="Contraseña"
+                type="password"
+                placeholder="Contraseña"
+                value={password}
+                onChange={onPasswordChange}
+                onBlur={onPasswordBlur}
+                error={errorPass.error}
+                helperText={errorPass.message}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sx={{ mt: 2 }}>
+              <TextField
+                label="Repetir Contraseña"
+                type="password"
+                placeholder="Repetir Contraseña"
+                value={vPassword}
+                onChange={onVPasswordChange}
+                error={errorVpass.error}
+                helperText={errorVpass.message}
+                fullWidth
+              />
+            </Grid>
+            <Grid>
+              <FormControlLabel
+                control={
+                  <Checkbox onClick={onHabilitadoChange} checked={habilitado} />
+                }
+                label="Habilitado"
+              />
+            </Grid>
+            <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
+              <Grid item xs={12}>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  alignItems="center"
+                  justifyContent="center"
+                  mt={5}
+                >
+                  <Button variant="outlined" startIcon={<ArrowBackIcon />}>
+                    <Link to={`/`}>Volver</Link>
+                  </Button>
+                  <Button type="submit" variant="contained" endIcon={<EditIcon />}>
+                    Guardar Cambios
+                  </Button>
+                </Stack>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-      </form>
-      {openYesNo ? <ModalYesNo functionToDispatch={updateCliente} dataDispatch={cliente} titulo={titulo} open={openYesNo} setOpen={setOpenYesNo} setOpenAlert={setOpenAlert} /> : null}
-      {openAlert ? <ModalAlert title={tituloAlert} open={openAlert} setOpen={setOpenAlert} goToHome={goToHome}/> : null}
+        </form>
+        {openYesNo ? <ModalYesNo functionToDispatch={updateCliente} dataDispatch={cliente} titulo={titulo} open={openYesNo} setOpen={setOpenYesNo} setOpenAlert={setOpenAlert} /> : null}
+        {openAlert ? <ModalAlert title={{titulo:tituloAlert,tipo}} open={openAlert} setOpen={setOpenAlert} goToHome={goToHome} /> : null}
+      </Box>
     </MainLayout>
   );
 };
