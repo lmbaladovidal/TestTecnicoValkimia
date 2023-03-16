@@ -26,7 +26,9 @@ const createDummyCiudad = (req, res) => {
 
 const getCiudades = async (req,res)=>{
   try {
-    const ciudades = await Ciudades.findAll({});
+    const ciudades = await Ciudades.findAll({
+      order: [['nombre', 'ASC']],
+    });
     res.json({
       result: { status: 200, ciudades},
     });

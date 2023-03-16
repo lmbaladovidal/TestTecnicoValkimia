@@ -62,6 +62,7 @@ const createFactura = (req, res) => {
 
 const listFacturasxCliente = async (req,res)=>{
   const amount = await Facturas.count({
+    order: [['fecha', 'DESC']],
     where: {
       idCliente: req.params.idCliente
     }
