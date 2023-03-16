@@ -50,7 +50,6 @@ const nextPage = (e)=>{
   return (
     <>
       <h1>Lista de Clientes</h1>
-      <span>Loading: {isLoading ? "True" : "False"}</span>
       <Box sx={{ width: "100%", maxWidth: 1080, bgcolor: "background.paper" }}>
         <Divider />
         <nav aria-label="main clients">

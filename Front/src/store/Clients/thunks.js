@@ -14,7 +14,6 @@ export const getAllClientes=()=>{
     return async(dispatch,getState)=>{
         dispatch(startLoadingClientes());
         const {data} = await clientesApi.get(`/list/all`)
-        console.log("data desde getAllClientes",data);
         dispatch(setClientes({clientes:data.result.clientes,page:data.result.page,amount:data.result.amount}))
     }
 }
@@ -28,7 +27,6 @@ export const getCliente=(id)=>{
 }
 
 export const createCliente = (data)=>{
-    console.log("data desde createCliente",data);
     return async(dispatch)=>{
         await clientesApi.post(`/create`,{
             nombre:data.nombre,
@@ -53,7 +51,6 @@ export const deleteCliente = (id)=>{
 
 export const updateCliente = (data)=>{
     return async(dispatch)=>{
-        console.log("SoyData en el thuk",data);
         await clientesApi.put(`/put/${data.id}`,{
             nombre:data.nombre,
             apellido:data.apellido,

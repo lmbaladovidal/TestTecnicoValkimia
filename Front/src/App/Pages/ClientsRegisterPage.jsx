@@ -44,13 +44,14 @@ export const ClientsRegisterPage = () => {
 
   const dispatch = useDispatch();
   const {ciudades} = useSelector((state) => state.cities);
-  const { nombre,apellido,domicilio,email,password,vPassword, onInputChange } = useForm(initialState);
+  const { nombre,apellido,domicilio,email,password,vPassword, onInputChange,onResetForm } = useForm(initialState);
   const [cliente, setCliente] = useState({})
   const [ciudad, setCiudad] = useState('')
   const [titulo, setTitulo] = useState('')
   const [tituloAlert, setTituloAlert] = useState('')
   const [openAlert, setOpenAlert] = useState(false)
   const [openYesNo, setOpenYesNo] = useState(false)
+  const [goToHome, setGoToHome] = useState(false)
   
   const [errorName, setErrorName] = useState({error:false,message:''})
   const [errorApellido, setErrorApellido] = useState({error:false,message:''})
@@ -147,6 +148,7 @@ export const ClientsRegisterPage = () => {
       for(let i=0; i< valores.length; i++){
         if (!valores[i]){
           setTituloAlert('Error en los campos')
+          setGoToHome(false)
           setOpenAlert(true)
           return
         }
@@ -163,6 +165,7 @@ export const ClientsRegisterPage = () => {
       })
       setOpenYesNo(true)
       setTituloAlert('Exito en la operacion')
+      setGoToHome(true)
       setTitulo("¿Desea Registrar al cliente?")
     }
 
@@ -290,7 +293,7 @@ export const ClientsRegisterPage = () => {
           </Grid>
         </form>
         {openYesNo?<ModalYesNo functionToDispatch={createCliente} dataDispatch={cliente} titulo={titulo} open={openYesNo} setOpen={setOpenYesNo} setOpenAlert={setOpenAlert}/>:null}
-        {openAlert?<ModalAlert title={tituloAlert} open={openAlert} setOpen={setOpenAlert}/>:null}
+        {openAlert?<ModalAlert title={tituloAlert} open={openAlert} setOpen={setOpenAlert} goToHome={goToHome}/>:null}
       </Grid>
     </MainLayout>
   );

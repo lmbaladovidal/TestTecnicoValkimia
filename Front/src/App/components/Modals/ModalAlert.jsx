@@ -3,13 +3,17 @@ import Modal from "@mui/material/Modal";
 import Button from "@mui/joy/Button";
 import Typography from "@mui/joy/Typography";
 import Stack from "@mui/system/Stack";
+import { useNavigate } from "react-router-dom";
 
 
-export const ModalAlert = ({title, open, setOpen }) => {
+export const ModalAlert = ({ title, open, setOpen, resetForm, goToHome = false }) => {
 
-    const onButtonSiClick= ()=>{
-        setOpen(false)
-    }
+  const navigate = useNavigate()
+
+  const onButtonSiClick = () => {
+    setOpen(false)
+    goToHome ? navigate("/") : resetForm()
+  }
 
   return (
     <Modal
@@ -39,13 +43,13 @@ export const ModalAlert = ({title, open, setOpen }) => {
         >
           {title}
         </Typography>
-        <Stack 
-          direction="row" spacing={2} 
+        <Stack
+          direction="row" spacing={2}
           alignItems='center'
           justifyContent='center'
           mt={5}
         >
-            <Button onClick={onButtonSiClick}>Ok</Button>
+          <Button onClick={onButtonSiClick}>Ok</Button>
         </Stack>
       </Sheet>
     </Modal>

@@ -11,16 +11,17 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { validations } from "../../helpers/"
-import { ListItemIcon, ListItemText, Stack } from "@mui/material";
-import { Link, useParams } from "react-router-dom";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
-import { Divider, List, ListItem } from "@mui/joy";
 import Inventory2Icon from '@mui/icons-material/Inventory2';
-import { ModalAddBill } from "./Modals/ModalAddBill";
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Stack from "@mui/material/Stack";
+import { validations } from "../../helpers/"
+import { Link } from "react-router-dom";
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { Divider, List, ListItem } from "@mui/joy";
 import { ModalAlert } from "./Modals/ModalAlert";
 import { ModalYesNo } from "./Modals/ModalYesNo";
 import { createFactura } from "../../store/Bills/thunks";
@@ -30,7 +31,7 @@ export const AddBill = () => {
 
   const initialState = {
     detalle: '',
-    importe: 0
+    importe: ''
   }
   const objErrors = {
     cliente: false,
@@ -41,6 +42,9 @@ export const AddBill = () => {
 
   const { page, clientes, isLoading, amount } = useSelector((state) => state.client);
   const dispatch = useDispatch();
+
+  const { detalle, importe, onInputChange, cleanInput, onResetForm } = useForm(initialState)
+
   const [cliente, setCliente] = useState('')
   const [openAlert, setOpenAlert] = useState(false)
   const [tituloAlert, setTituloAlert] = useState('')
@@ -48,6 +52,7 @@ export const AddBill = () => {
   const [detalleProductos, setDetalleProductos] = useState([])
   const [dataFactura, setDataFactura] = useState({})
   const [openYesNo, setOpenYesNo] = useState(false)
+  const [titulo, setTitulo] = useState('')
 
 
   const [errorCliente, setErrorCliente] = useState({ error: false, message: '' })
@@ -56,36 +61,19 @@ export const AddBill = () => {
   const [errorFecha, setErrorFecha] = useState({ error: false, message: '' })
   const [errors, setErrors] = useState(objErrors)
 
+
   useEffect(() => {
     dispatch(getAllClientes());
   }, []);
 
 
-  const [titulo, setTitulo] = useState('')
-  const { detalle, importe, onInputChange, cleanInput } = useForm(initialState)
+  const resetForm = () => {
+  
+    setFecha('');
+    setDetalleProductos([])
+    onResetForm()
+  }
 
-  const handleChange = (event) => {
-    setCliente(event.target.value);
-    setErrorCliente({error:false,message:''})
-    setErrors({...errors,cliente:true})
-  };
-
-  const handleFechaChange = ({ c }) => {
-    setErrorFecha({error:false,message:""})
-    setErrors({ ...errors, fecha: true })
-    let fechaAux = ""
-    fechaAux += c.year + "-"
-    fechaAux += c.month > 9 ? c.month + "-" : "0" + c.month + "-"
-    fechaAux += c.day > 9 ? c.day : "0" + c.day
-    setFecha(fechaAux)
-    // if (!validations.validarFecha(fechaAux)) {
-    //   setErrors({ ...errors, fecha: false })
-    //   setErrorFecha({error:true,message:"Debe seleccionar una fecha valida"})
-    //   return 
-    // }
-    setErrors({ ...errors, fecha: true })
-    setErrorFecha({error:false,message:""})
-  };
 
   const agregarDetalle = (event) => {
     if (!validations.validarTamaño(event.target.value, 2)) {
@@ -105,44 +93,73 @@ export const AddBill = () => {
     return auxDetalle;
   }
 
+
+  const handleChange = (event) => {
+    setCliente(event.target.value);
+    setErrorCliente({ error: false, message: '' })
+    setErrors({ ...errors, cliente: true })
+  };
+
+  const handleFechaChange = ({ c }) => {
+    setErrorFecha({ error: false, message: "" })
+    setErrors({ ...errors, fecha: true })
+    let fechaAux = ""
+    fechaAux += c.year + "-"
+    fechaAux += c.month > 9 ? c.month + "-" : "0" + c.month + "-"
+    fechaAux += c.day > 9 ? c.day : "0" + c.day
+    setFecha(fechaAux)
+    // if (!validations.validarFecha(fechaAux)) {
+    //   setErrors({ ...errors, fecha: false })
+    //   setErrorFecha({error:true,message:"Debe seleccionar una fecha valida"})
+    //   return 
+    // }
+    setErrors({ ...errors, fecha: true })
+    setErrorFecha({ error: false, message: "" })
+  };
+
+
+
   const onDetalleBlur = (event) => {
-    if (!validations.validarTamaño(event.target.value, 2)&&event.target.value.length!=0) {
-      setErrorDetalle({error:true,message:"El detalle debe tener mas de dos caracteres"})
+    if (!validations.validarTamaño(event.target.value, 2) && event.target.value.length != 0) {
+      setErrorDetalle({ error: true, message: "El detalle debe tener mas de dos caracteres" })
       setErrors({ ...errors, detalle: false })
       return
     }
-    setErrorDetalle({error:false,message:""})
+    setErrorDetalle({ error: false, message: "" })
     setErrors({ ...errors, detalle: true })
     cleanInput(event)
   }
 
+
   const onImporteBlur = ({ target }) => {
     if (parseFloat(importe) <= 0) {
-      seterrorImporte({error:true,message:"el importe debe ser mayor a 0"})
+      seterrorImporte({ error: true, message: "el importe debe ser mayor a 0" })
       setErrors({ ...errors, importe: false })
       return
     } else if (!validations.validarNumero(importe)) {
-      seterrorImporte({error:true,message:"Solo se admiten valores numericos"})
+      seterrorImporte({ error: true, message: "Solo se admiten valores numericos" })
       setErrors({ ...errors, importe: false })
       return
     }
-    seterrorImporte({error:false,message:""})
+    seterrorImporte({ error: false, message: "" })
     setErrors({ ...errors, importe: true })
   }
 
-  const validarItemsEnDetalle = ()=>{
+
+  const validarItemsEnDetalle = () => {
     if (detalleProductos.length == 0) {
       setErrors({ ...errors, importe: false })
-      setErrorDetalle({error:true,message:"debe haber al menos un item cargado"})
+      setErrorDetalle({ error: true, message: "debe haber al menos un item cargado" })
     }
-    setErrorDetalle({error:false,message:""})
+    setErrorDetalle({ error: false, message: "" })
     setErrors({ ...errors, detalle: true })
   }
 
-  const validarCliente = ()=>{
-    if(cliente==''){
-      setErrorCliente({error:true,message:'Debe seleccionar un cliente'})
-      setErrors({...errors,cliente:false})
+
+  const validarCliente = () => {
+    if (cliente == '') {
+      setErrorCliente({ error: true, message: 'Debe seleccionar un cliente' })
+      setErrors({ ...errors, cliente: false })
     }
   }
 
@@ -165,7 +182,7 @@ export const AddBill = () => {
       importe,
       detalle: formatearTextoDetalle()
     })
-    setTitulo('Factura grabada con éxito')
+    setTitulo('¿Desea Grabar la factura?')
     setTituloAlert('Exito en la carga')
     setOpenYesNo(true)
   }
@@ -251,7 +268,7 @@ export const AddBill = () => {
           Cargar Factura
         </Button>
         {openYesNo ? <ModalYesNo functionToDispatch={createFactura} dataDispatch={dataFactura} titulo={titulo} open={openYesNo} setOpen={setOpenYesNo} setOpenAlert={setOpenAlert} /> : null}
-        {openAlert ? <ModalAlert title={tituloAlert} open={openAlert} setOpen={setOpenAlert} /> : null}
+        {openAlert ? <ModalAlert title={tituloAlert} open={openAlert} setOpen={setOpenAlert} resetForm={resetForm} /> : null}
       </Stack>
     </MainLayout>
   )

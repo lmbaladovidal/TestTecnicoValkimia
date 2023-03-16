@@ -2,16 +2,16 @@ const validarTamaño = (value, length) => {
   return value.trim().length > length ? true : false;
 };
 const validarTexto = (value) => {
-  const regEx = new RegExp("^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$");
+  const regEx = new RegExp(/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/);
   return regEx.test(value) ? true : false;
 };
 const validarNumero = (value) => {
-  const regEx = new RegExp("\\d");
+  const regEx = new RegExp(/^\d*\.\d+$/);
+  console.log(value,regEx.test(value));
   return regEx.test(value) ? true : false;
 };
 
 const validarFecha = (value)=>{
-  console.log("soy valudar fecha",value);
   const regEx = new RegExp(/^\d{4}([\-/.])(0?[1-9]|1[1-2])\1(3[01]|[12][0-9]|0?[1-9])$/)
   return regEx.test(value)?true:false;
 }

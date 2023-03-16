@@ -51,6 +51,7 @@ export const ClientUpdate = () => {
   const [openYesNo, setOpenYesNo] = useState(false)
   const [titulo, setTitulo] = useState('')
   const [tituloAlert, setTituloAlert] = useState('')
+  const [goToHome, setGoToHome] = useState(false)
 
   useEffect(() => {
     dispatch(getCliente(idCliente));
@@ -198,6 +199,7 @@ export const ClientUpdate = () => {
     for (let i = 0; i < valores.length; i++) {
       if (!valores[i]) {
         setTituloAlert('Error en los campos')
+        setGoToHome(false)
         setOpenAlert(true)
         return
       }
@@ -213,6 +215,7 @@ export const ClientUpdate = () => {
       habilitado,
     })
     dispatch(updateCliente(cliente));
+    setGoToHome(true)
     setTituloAlert('Exito en la operacion')
     setTitulo('¿Desea editar al cliente?')
     setOpenYesNo(true)
@@ -346,7 +349,7 @@ export const ClientUpdate = () => {
         </Grid>
       </form>
       {openYesNo ? <ModalYesNo functionToDispatch={updateCliente} dataDispatch={cliente} titulo={titulo} open={openYesNo} setOpen={setOpenYesNo} setOpenAlert={setOpenAlert} /> : null}
-      {openAlert ? <ModalAlert title={tituloAlert} open={openAlert} setOpen={setOpenAlert} /> : null}
+      {openAlert ? <ModalAlert title={tituloAlert} open={openAlert} setOpen={setOpenAlert} goToHome={goToHome}/> : null}
     </MainLayout>
   );
 };

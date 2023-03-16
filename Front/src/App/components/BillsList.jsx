@@ -93,7 +93,7 @@ export const BillsList = ({ cliente, open, setOpen }) => {
                     </ListItemIcon>
                     <ListItemText
                       primary={
-                        parsarTexto(factura.fecha) + " - " + factura.importe
+                        parsarTexto(factura.fecha) + " - $" + factura.importe
                       }
                     />
                   </ListItemButton>
