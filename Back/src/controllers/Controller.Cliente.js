@@ -149,6 +149,21 @@ const listClientes = async (req, res) => {
   }
 };
 
+const listAllClientes = async (req, res) => {
+  try {
+    console.log("Listar Clientes");
+    const amount = await Clientes.count();
+    const clientes = await Clientes.findAll({});
+    res.json({
+      result: { status: 200, clientes, page: req.params.page, amount },
+    });
+  } catch (error) {
+    res.json({ error });
+  }
+};
+
+
+
 const listCliente = async (req, res) => {
   try {
     const cliente = await Clientes.findOne({
@@ -175,6 +190,7 @@ export const methods = {
   createCliente,
   deleteCliente,
   updateCliente,
+  listAllClientes,
   listClientes,
   listCliente,
 };
