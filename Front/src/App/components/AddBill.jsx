@@ -68,8 +68,7 @@ export const AddBill = () => {
 
 
   const resetForm = () => {
-  
-    setFecha('');
+    
     setDetalleProductos([])
     onResetForm()
   }
@@ -150,6 +149,7 @@ export const AddBill = () => {
     if (detalleProductos.length == 0) {
       setErrors({ ...errors, importe: false })
       setErrorDetalle({ error: true, message: "debe haber al menos un item cargado" })
+      return
     }
     setErrorDetalle({ error: false, message: "" })
     setErrors({ ...errors, detalle: true })

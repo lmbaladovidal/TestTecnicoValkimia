@@ -140,6 +140,7 @@ const listClientes = async (req, res) => {
     const clientes = await Clientes.findAll({
       offset: 10 * req.params.page,
       limit: 10,
+      order: [['nombre', 'ASC']]
     });
     res.json({
       result: { status: 200, clientes, page: req.params.page, amount },
@@ -153,7 +154,7 @@ const listAllClientes = async (req, res) => {
   try {
     console.log("Listar Clientes");
     const amount = await Clientes.count();
-    const clientes = await Clientes.findAll({});
+    const clientes = await Clientes.findAll({order: [['nombre', 'ASC']],});
     res.json({
       result: { status: 200, clientes, page: req.params.page, amount },
     });
