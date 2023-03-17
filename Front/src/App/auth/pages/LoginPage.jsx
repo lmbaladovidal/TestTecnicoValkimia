@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import {Link as RouterLink, useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
@@ -8,6 +8,7 @@ import { loginUser } from '../../../store/auth/thunks';
 import { MainLayout } from '../../Layout/MainLayout';
 import { useForm } from '../../../hooks';
 import { useEffect, useState } from 'react';
+import { Link } from '@mui/joy';
 
 export const LoginPage = () => {
 
@@ -85,6 +86,11 @@ export const LoginPage = () => {
             {showErr && <Typography sx={{mr:1}}>{errorMessage}</Typography>}
             </Grid>
           </Grid>
+          <Grid container direction='row' justifyContent='end'>
+          <Link component={RouterLink} color='inherit' to="/auth/register">
+            Crear una cuenta
+          </Link>
+        </Grid>
         </Grid>
       </form>
     </MainLayout>

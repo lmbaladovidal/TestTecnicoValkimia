@@ -1,12 +1,12 @@
 
-import { MainLayout } from "../Layout/MainLayout";
-import { useForm } from "../../hooks";
+import { MainLayout } from "../../Layout/MainLayout";
+import { useForm } from "../../../hooks";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { getCiudades } from "../../store/Cities/thunks";
-import { createCliente } from "../../store/Clients/thunks";
-import { validations } from "../../helpers";
+import { Link as RouterLink } from 'react-router-dom';
+import { getCiudades } from "../../../store/Cities/thunks";
+import { createCliente } from "../../../store/Clients/thunks";
+import { validations } from "../../../helpers";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -18,9 +18,10 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import Autocomplete from "@mui/material/Autocomplete";
 import { Stack } from "@mui/system";
-import { ModalAlert } from "../components/Modals/ModalAlert"
-import { ModalYesNo } from "../components/Modals/ModalYesNo";
+import { ModalAlert } from "../../components/Modals/ModalAlert"
+import { ModalYesNo } from "../../components/Modals/ModalYesNo";
 import { Box } from "@mui/material";
+import { Link, Typography } from "@mui/joy";
 
 
 
@@ -75,12 +76,6 @@ export const ClientsRegisterPage = () => {
   const handleChange = (event) => {
     setCiudad(event.target.value);
   };
-
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    if(status!='logged') navigate('/auth/login')
-  }, [status])
 
 
   const onNombreBlur = ({ target }) => {
@@ -186,7 +181,6 @@ export const ClientsRegisterPage = () => {
   return (
     <MainLayout title="Registrar Cliente">
       <Box sx={{ width: "100%", maxWidth: 760, bgcolor: "background.paper" }}>
-        <h1>Registrar Cliente</h1>
         <Grid container>
           <form onSubmit={onSubmit}>
             <Grid container>
@@ -309,6 +303,12 @@ export const ClientsRegisterPage = () => {
           </form>
           {openYesNo ? <ModalYesNo functionToDispatch={createCliente} dataDispatch={cliente} titulo={titulo} open={openYesNo} setOpen={setOpenYesNo} setOpenAlert={setOpenAlert} /> : null}
           {openAlert ? <ModalAlert title={{titulo:tituloAlert,tipo}} open={openAlert} setOpen={setOpenAlert} goToHome={goToHome} /> : null}
+          <Grid container direction='row' justifyContent='end'>
+          <Typography sx={{mr:1}}>¿Ya tienes cuenta?</Typography>
+          <Link component={RouterLink} color='inherit' to="/auth/login">
+            Ingresar
+          </Link>
+        </Grid>
         </Grid>
       </Box>
     </MainLayout>

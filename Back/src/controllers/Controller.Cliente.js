@@ -166,7 +166,7 @@ const listAllClientes = async (req, res) => {
   try {
     console.log("Listar Clientes");
     const amount = await Clientes.count();
-    const clientes = await Clientes.findAll({order: [['nombre', 'ASC']],});
+    const clientes = await Clientes.findAll({ order: [['nombre', 'ASC']], });
     res.json({
       result: { status: 200, clientes, page: req.params.page, amount },
     });
@@ -204,6 +204,52 @@ const listCliente = async (req, res) => {
   }
 };
 
+
+const loginCliente = async (req, res) => {
+  try {
+    console.log(req.body);
+    const cliente = await Clientes.findOne({
+      attributes: [
+        "id",
+        "nombre",
+        "apellido",
+        "email",
+        "habilitado"
+      ],
+      where: {
+        email: req.body.email,
+        password: req.body.password,
+        habilitado:true
+      },
+    })  
+      console.log(cliente); 
+      if(cliente){
+        res.json({
+          result:
+          {
+            status: 200,
+            cliente
+          }
+        })
+      }else{
+        console.log(3.2);
+          res.json({
+            result:
+              {
+                status: 400,
+                cliente:null
+              }
+          })
+      }
+  } catch (error) {
+    console.log(error);
+    res.json({
+      data: error,
+      status: 500,
+    });
+  }
+};
+
 export const methods = {
   createDummyCliente,
   createCliente,
@@ -212,4 +258,5 @@ export const methods = {
   listAllClientes,
   listClientes,
   listCliente,
+  loginCliente,
 };
