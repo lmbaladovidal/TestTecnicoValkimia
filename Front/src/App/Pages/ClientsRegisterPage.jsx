@@ -26,6 +26,9 @@ import { Box } from "@mui/material";
 
 
 export const ClientsRegisterPage = () => {
+
+
+  
   const initialState = {
     nombre: "",
     apellido: "",
@@ -72,6 +75,12 @@ export const ClientsRegisterPage = () => {
   const handleChange = (event) => {
     setCiudad(event.target.value);
   };
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if(status!='logged') navigate('/auth/login')
+  }, [status])
 
 
   const onNombreBlur = ({ target }) => {

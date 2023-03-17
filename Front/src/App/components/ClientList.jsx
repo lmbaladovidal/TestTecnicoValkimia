@@ -47,6 +47,10 @@ const nextPage = (e)=>{
     return parseInt(amount%10==0?amount/10:amount/10+1);
   }
 
+  const onClickCerrar = ()=>{
+
+  }
+
   return (
     <>
       <h1>Lista de Clientes</h1>
@@ -80,7 +84,7 @@ const nextPage = (e)=>{
           <Typography sx={{mr:1}}>{`Página ${parseInt(page)+1} de ${obtenerCantidadPaginas()}`}</Typography>
           <Button variant="contained" endIcon={< NavigateNextIcon/>} onClick={nextPage}>
             Seguiente
-          </Button>
+          </Button>    
         </Stack>
       </Box>
     </>

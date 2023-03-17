@@ -86,6 +86,14 @@ export const ClientUpdate = () => {
   const [errorVpass, setErrorVpass] = useState({ error: false, message: '' })
   const [errors, setErrors] = useState(objErrors)
 
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if(status!='logged') navigate('/auth/login')
+  }, [status])
+
+
   const obtenerCiudad = () => {
     return ciudades.filter((ciudadItem) => {
       return ciudadItem.id == ciudad;
@@ -353,7 +361,7 @@ export const ClientUpdate = () => {
           </Grid>
         </form>
         {openYesNo ? <ModalYesNo functionToDispatch={updateCliente} dataDispatch={cliente} titulo={titulo} open={openYesNo} setOpen={setOpenYesNo} setOpenAlert={setOpenAlert} /> : null}
-        {openAlert ? <ModalAlert title={{titulo:tituloAlert,tipo}} open={openAlert} setOpen={setOpenAlert} goToHome={goToHome} /> : null}
+        {openAlert ? <ModalAlert title={{ titulo: tituloAlert, tipo }} open={openAlert} setOpen={setOpenAlert} goToHome={goToHome} /> : null}
       </Box>
     </MainLayout>
   );

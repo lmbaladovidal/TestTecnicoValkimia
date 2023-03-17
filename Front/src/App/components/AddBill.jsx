@@ -63,6 +63,7 @@ export const AddBill = () => {
   const [errors, setErrors] = useState(objErrors)
 
 
+
   useEffect(() => {
     dispatch(getAllClientes());
   }, []);
@@ -74,6 +75,12 @@ export const AddBill = () => {
     onResetForm()
 
   }
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if(status!='logged') navigate('/auth/login')
+  }, [status])
 
 
   const agregarDetalle = (event) => {
@@ -214,7 +221,7 @@ export const AddBill = () => {
         <Grid container>
           <FormControl fullWidth sx={{ textAlign: "left" }}>
             <InputLabel id="demo-simple-select-label">Cliente</InputLabel>
-            <Select name={"cliente"} value={cliente} onChange={handleChange} helperText={errorCliente.message} required={true} error={errorCliente.error}>
+            <Select name={"cliente"} value={cliente} onChange={handleChange}  required={true} error={errorCliente.error} helperText={errorCliente.message}>
               {clientes && clientes.map((cliente) => (<MenuItem key={cliente.id} value={cliente.id}>{cliente.nombre + " " + cliente.apellido}</MenuItem>))}
             </Select>
           </FormControl>
